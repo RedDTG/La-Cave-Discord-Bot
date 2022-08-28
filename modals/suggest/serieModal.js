@@ -1,4 +1,5 @@
 const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder } = require('discord.js');
+const databases = { config: require("../../data/config.json") }
 
 
 const buttons = [
@@ -17,32 +18,29 @@ const buttons = [
 ]
 
 module.exports = {
-    name: 'suggest-modal',
-    async runInteraction(client, interaction) {
+    name: 'serie-modal',
+    runInteraction(client, interaction) {
+        if (!databases.config[interaction.guildId].suggest) {
+            return interaction.reply({ content: `Le channel de suggestion n'est pas configuré !`, ephemeral: true })
+        }
+
         const title = interaction.fields.getTextInputValue('suggest-title');
-        const year = interaction.fields.getTextInputValue('suggest-year');
-        let type = interaction.fields.getTextInputValue('suggest-type');
+        const season = interaction.fields.getTextInputValue('suggest-season');
         const infos = interaction.fields.getTextInputValue('suggest-infos');
         const embed = new EmbedBuilder() 
             .setTitle(title)
             // .setThumbnail(client.user.displayAvatarURL())
             .setTimestamp()
             .setFooter({text: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+            .setColor('#48008c')
+            .addFields(
+                { name: `Type`, value: 'Série', inline: true },
+                { name: `Saison`, value: season, inline: true },
+            );
 
             if (infos) { embed.addFields({ name: `Informations complémentaires`, value: infos, inline: false }) }
 
-            if (type.toLowerCase() == 'anime') { embed.setColor('#a81313'); type = 'Anime'; }
-            if (type.toLowerCase() == 'serie' || type.toLowerCase() == 'série') { embed.setColor('#48008c'); type = 'Série'}
-            if (type.toLowerCase() == 'film') { embed.setColor('#bfa917'); type = 'Film'}
-            if (type.toLowerCase() == 'livre audio') { embed.setColor('#010770'); type = 'Livre audio'}
-
-            embed.addFields(
-                { name: `Type`, value: type, inline: true },
-                { name: `Année`, value: year, inline: true },
-            );
-
-        
-        client.channels.cache.get('1009965116013424730').send({ embeds: [embed], components: buttons });
-        interaction.reply({ content: `Vous avez demandé ${title} !`, ephemeral: true })
+        client.channels.cache.get(databases.config[interaction.guildId].suggest).send({ embeds: [embed], components: buttons });
+        return interaction.reply({ content: `Vous avez demandé ${title} !`, ephemeral: true })
     }
 };

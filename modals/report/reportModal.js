@@ -1,4 +1,6 @@
 const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder } = require('discord.js');
+const databases = { config: require("../../data/config.json") }
+
 
 const buttons = [
     new ActionRowBuilder()
@@ -18,7 +20,12 @@ const buttons = [
 
 module.exports = {
     name: 'report-modal',
-    async runInteraction(client, interaction) {
+    runInteraction(client, interaction) {
+        if (!databases.config[interaction.guildId].report) {
+            return interaction.reply({ content: `Le channel de reporting n'est pas configuré !`, ephemeral: true })
+        }
+
+
         const title = interaction.fields.getTextInputValue('report-title');
         const media = interaction.fields.getTextInputValue('report-media');
         const details = interaction.fields.getTextInputValue('report-details');
@@ -33,7 +40,7 @@ module.exports = {
                 { name: `Détails`, value: details, inline: false },
             );
 
-                client.channels.cache.get('1011339702722379858').send({ embeds: [embed], components: buttons });
-                interaction.reply({ content: `Merci de nous avoir indiqué ce bug ! Nous nous en chargerons au plus vite et vous recontacterons si nous avons besoin de plus d'informations !`, ephemeral: true })
+        client.channels.cache.get(databases.config[interaction.guildId].report).send({ embeds: [embed], components: buttons });
+        return interaction.reply({ content: `Merci de nous avoir indiqué ce bug ! Nous nous en chargerons au plus vite et vous recontacterons si nous avons besoin de plus d'informations !`, ephemeral: true })
     }
 };
