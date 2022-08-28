@@ -18,7 +18,8 @@
   },
   "homepage": "https://github.com/RedDTG/La-Cave-Discord-Bot#readme",
   "dependencies": {
-    "discord.js": "13.6.0",
+    "clipboardy": "^3.0.0",
+    "discord.js": "^14.2.0",
     "dotenv": "16.0.0",
     "glob": "7.2.0"
   }
