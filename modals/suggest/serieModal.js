@@ -35,9 +35,9 @@ module.exports = {
             .setColor('#48008c')
             .addFields(
                 { name: `Type`, value: 'Série', inline: true },
-                { name: `Saison`, value: season, inline: true },
             );
-
+                
+            if (season) { embed.addFields({ name: `Saison`, value: season, inline: true }) }
             if (infos) { embed.addFields({ name: `Informations complémentaires`, value: infos, inline: false }) }
 
         client.channels.cache.get(databases.config[interaction.guildId].suggest).send({ embeds: [embed], components: buttons });
