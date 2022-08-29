@@ -20,7 +20,7 @@ const buttons = [
 module.exports = {
     name: 'movie-modal',
     runInteraction(client, interaction) {
-        if (!databases.config[interaction.guildId].suggest) {
+        if (!databases.config[interaction.guildId].suggest || !databases.config[interaction.guildId]) {
             return interaction.reply({ content: `Le channel de suggestion n'est pas configuré !`, ephemeral: true })
         }
 
