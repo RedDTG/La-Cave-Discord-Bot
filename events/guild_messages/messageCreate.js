@@ -10,7 +10,9 @@ module.exports = {
 
             if ((message.type == 18) && (databases.config[message.guildId].hasOwnProperty('report'))) { 
                 if (message.channel.id == databases.config[message.guildId].report) { message.delete(); } 
+            }
 
+            if (databases.config[message.guildId].hasOwnProperty('report')) {
                 if (message.author.bot && (message.channel.id == databases.config[message.guildId].report) && (message.embeds.length == 1)) {
                     let author = client.users.cache.find(user => user.username == message.embeds[0].footer.text.split("#")[0]).id;
                     databases.reports[message.id] = {
