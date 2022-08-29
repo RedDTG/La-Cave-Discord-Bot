@@ -52,7 +52,7 @@ const animeModal = new ModalBuilder()
                 .setLabel('Saison')
                 .setStyle(TextInputStyle.Short)
                 .setPlaceholder(`57`)
-                .setRequired(true)
+                .setRequired(false)
         ),
 
         new ActionRowBuilder().addComponents(
@@ -84,7 +84,7 @@ const serieModal = new ModalBuilder()
                 .setLabel('Saison')
                 .setStyle(TextInputStyle.Short)
                 .setPlaceholder(`5`)
-                .setRequired(true)
+                .setRequired(false)
         ),
 
         new ActionRowBuilder().addComponents(

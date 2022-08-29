@@ -27,7 +27,7 @@ module.exports = {
             name: 'channel',
             description: 'Quel channel assigner ?',
             type: 7, //channel type
-            required: false,
+            required: true,
         },
         {
             name: 'delete',
