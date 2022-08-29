@@ -1,9 +1,14 @@
-const { Client, Collection } = require('discord.js');
+const { Client, Collection, GatewayIntentBits } = require('discord.js');
 
 const dotenv = require('dotenv');
 dotenv.config();
 
-const client = new Client({ intents: 513 });
+const client = new Client({ intents: [
+    GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildBans,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,] });
 
 ['commands', 'buttons', 'modals'].forEach(x => client[x] = new Collection());
 ['EventUtil', 'CommandUtil', 'ButtonUtil', 'ModalUtil'].forEach(handler => { require(`./utils/handlers/${handler}`)(client) });

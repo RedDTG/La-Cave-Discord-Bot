@@ -2,7 +2,7 @@ const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
     name: 'ping',
-    description: 'Commande ping.',
+    description: 'Commande ping',
     permissions: [],
     run: (client, message, args) => {
 
