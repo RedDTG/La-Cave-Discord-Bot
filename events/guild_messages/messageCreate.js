@@ -29,10 +29,10 @@ module.exports = {
             writeFile("data/reports.json", JSON.stringify(databases.reports), (err) => { if (err) { console.log(err) } });
         }
 
-        if (message.content.startsWith("+suggest")) {
-            message.delete();
-            message.channel.send({ content: `La commande +suggest n'existe plus ! Veuillez utiliser /suggest à la place !`, ephemeral: true })
-        }
+        // if (message.content.startsWith("+suggest")) {
+        //     message.delete();
+        //     message.channel.send({ content: `La commande +suggest n'existe plus ! Veuillez utiliser /suggest à la place !`, ephemeral: true })
+        // }
 
         return;
         // if (message.author.bot) return;
