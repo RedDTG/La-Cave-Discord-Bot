@@ -20,6 +20,10 @@ module.exports = {
                 {
                     name: 'report',
                     value: 'report'
+                },
+                {
+                    name: 'animes',
+                    value: 'animes'
                 }
             ]
         },
@@ -46,26 +50,20 @@ module.exports = {
             databases.config[interaction.guildId] = {}
         }
 
+        const config = databases.config[interaction.guildId];
         if (deleteChoice) {
-            if (typeChoice == 'suggest') { delete databases.config[interaction.guildId].suggest }
-            else { delete databases.config[interaction.guildId].report }
-
-            writeFile("data/config.json", JSON.stringify(databases.config), (err) => { if (err) { console.log(err) } });
-            return interaction.reply({ content: `Ce channel a été délink !` })
+            delete config[typeChoice];
+            interaction.reply({content: `Le channel ${channelChoice} a été dé-configuré pour la commande : ${typeChoice}`,ephemeral: true});
+        } else {
+            config[typeChoice] = channelChoice.id;
+            interaction.reply({content: `Le channel ${channelChoice} a été configuré pour la commande : ${typeChoice}`,ephemeral: true});
         }
 
-        else if (typeChoice == 'suggest') {
-            databases.config[interaction.guildId].suggest = channelChoice.id;
-
-            writeFile("data/config.json", JSON.stringify(databases.config), (err) => { if (err) { console.log(err) } });
-            return interaction.reply({ content: `Le channel ${channelChoice} a été configuré pour recevoir les suggestions.`, ephemeral: true });
+        writeFile("data/config.json", JSON.stringify(databases.config), (err) => {
+        if (err) {
+            console.log(err);
         }
-
-        else if (typeChoice == 'report') {
-            databases.config[interaction.guildId].report = channelChoice.id;
-
-            writeFile("data/config.json", JSON.stringify(databases.config), (err) => { if (err) { console.log(err) } });
-            return interaction.reply({ content: `Le channel ${channelChoice} a été configuré pour recevoir les reports de bugs.`, ephemeral: true });
-        }
+        });
+        
     }
 }
