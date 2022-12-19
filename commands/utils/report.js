@@ -1,4 +1,4 @@
-const { TextInputBuilder, TextInputStyle, ActionRowBuilder, ModalBuilder, SelectMenuBuilder } = require('discord.js');
+const { TextInputBuilder, TextInputStyle, ActionRowBuilder, ModalBuilder } = require('discord.js');
 
 const modal = new ModalBuilder()
     .setCustomId('report-modal')

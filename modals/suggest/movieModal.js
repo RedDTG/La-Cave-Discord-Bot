@@ -32,7 +32,7 @@ module.exports = {
             // .setThumbnail(client.user.displayAvatarURL())
             .setTimestamp()
             .setFooter({text: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
-            .setColor('#bfa917')
+            .setColor('#3B8AD3')
             .addFields(
                 { name: `Type`, value: 'Film', inline: true },
                 { name: `Année`, value: year, inline: true },

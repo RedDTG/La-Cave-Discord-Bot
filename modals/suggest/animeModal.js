@@ -32,7 +32,7 @@ module.exports = {
             // .setThumbnail(client.user.displayAvatarURL())
             .setTimestamp()
             .setFooter({text: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
-            .setColor('#a81313')
+            .setColor('#905AB8')
             .addFields(
                 { name: `Type`, value: 'Anime', inline: true },
             );

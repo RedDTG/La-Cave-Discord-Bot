@@ -32,7 +32,7 @@ module.exports = {
             // .setThumbnail(client.user.displayAvatarURL())
             .setTimestamp()
             .setFooter({text: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
-            .setColor('#010770')
+            .setColor('#6778CC')
             .addFields(
                 { name: `Type`, value: 'Livre Audio', inline: true },
                 { name: `Créateur`, value: creator, inline: true },
