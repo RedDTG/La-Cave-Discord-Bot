@@ -22,7 +22,7 @@ module.exports = {
     name: 'report-modal',
     runInteraction(client, interaction) {
         if (!databases.config[interaction.guildId].report) {
-            return interaction.reply({ content: `Le channel de reporting n'est pas configuré !`, ephemeral: true })
+            return interaction.reply({ content: `Le channel pour la commande : report, n'est pas configuré !`, ephemeral: true })
         }
 
 
