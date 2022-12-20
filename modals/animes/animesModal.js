@@ -124,8 +124,5 @@ module.exports = {
         
         return interaction.reply({ content: 'Cet animé a été ajouté dans la liste', ephemeral: true });
 
-
-
-
     }
 };
