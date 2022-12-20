@@ -1,5 +1,5 @@
 const { PermissionsBitField } = require('discord.js');
-const databases = { suggests: require("../../data/suggests.json") }
+const databases = { suggest: require("../../data/suggest.json") }
 const { writeFile } = require('fs');
 
 
@@ -8,11 +8,11 @@ module.exports = {
     permissions: [PermissionsBitField.Flags.ManageMessages],
     runInteraction(client, interaction) {
 
-        if (databases.suggests[interaction.message.id]) {
-            let suggest_datas = databases.suggests[interaction.message.id]
+        if (databases.suggest[interaction.message.id]) {
+            let suggest_datas = databases.suggest[interaction.message.id]
             client.users.fetch(suggest_datas.author, false).then((user) => { user.send(`Votre demande '**${suggest_datas.title}**' a été ajoutée à LaCave !`)});
-            delete databases.suggests[interaction.message.id];
-            writeFile("data/suggests.json", JSON.stringify(databases.suggests), (err) => { if (err) { console.log(err) } });
+            delete databases.suggest[interaction.message.id];
+            writeFile("data/suggest.json", JSON.stringify(databases.suggest), (err) => { if (err) { console.log(err) } });
         }
 
         interaction.message.delete();
