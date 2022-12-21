@@ -1,4 +1,4 @@
-const { TextInputBuilder, TextInputStyle, ActionRowBuilder, ModalBuilder } = require('discord.js');
+const { TextInputBuilder, TextInputStyle, ActionRowBuilder, ModalBuilder, PermissionsBitField } = require('discord.js');
 
 const animesModal = new ModalBuilder()
     .setCustomId('animes-modal')
@@ -18,7 +18,7 @@ const animesModal = new ModalBuilder()
 module.exports = {
     name: 'add-anime',
     description: 'Ajoute un anime à la Saison actuelle !',
-    permissions: [],
+    permissions: [PermissionsBitField.Flags.ManageMessages],
     runInteraction: async (client, interaction) => {
 
         await interaction.showModal(animesModal);

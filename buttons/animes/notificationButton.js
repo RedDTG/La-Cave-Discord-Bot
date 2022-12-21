@@ -5,7 +5,7 @@ const { writeFile } = require('fs');
 
 module.exports = {
     name: 'animes-notification-button',
-    permissions: [PermissionsBitField.Flags.ManageMessages],
+    permissions: [],
     runInteraction(client, interaction) {
 
         anime = databases.animes[interaction.message.id];
