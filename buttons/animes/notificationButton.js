@@ -16,8 +16,8 @@ module.exports = {
         let content="";
         if(notif.includes(interaction.user.id))
         {
-            notif.splice(interaction.user.id, 1)
-            content=`Tu as déjà ajouté **\`${anime.title}\`** dans ta liste - **\`/list\`** pour voir tous tes animes`
+            notif.pop();
+            content=`Tu as enlevé **\`${anime.title}\`** de ta liste - **\`/list\`** pour voir tous tes animes`
         }else{
             notif.push(interaction.user.id);
             content=`Tu as ajouté **\`${anime.title}\`** à ta liste de notification`

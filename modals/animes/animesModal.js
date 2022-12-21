@@ -12,10 +12,10 @@ const buttons = [
                 .setLabel(' 🔔 Notifications')
                 .setStyle(ButtonStyle.Secondary),
 
-            new ButtonBuilder()
-                .setCustomId('animes-supprimer-button')
-                .setLabel('Supprimer cet anime')
-                .setStyle(ButtonStyle.Danger)
+            // new ButtonBuilder()
+            //     .setCustomId('animes-supprimer-button')
+            //     .setLabel('Supprimer cet anime')
+            //     .setStyle(ButtonStyle.Danger)
         )
 
 ]
