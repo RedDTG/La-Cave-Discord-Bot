@@ -20,10 +20,6 @@ const buttons = [
 module.exports = {
     name: 'audiobook-modal',
     runInteraction(client, interaction) {
-        if (!databases.config[interaction.guildId].suggest || !databases.config[interaction.guildId]) {
-            return interaction.reply({ content: `Le channel pour la commande : suggest, n'est pas configuré !`, ephemeral: true })
-        }
-
         const title = interaction.fields.getTextInputValue('suggest-title');
         const creator = interaction.fields.getTextInputValue('suggest-creator');
         const infos = interaction.fields.getTextInputValue('suggest-infos');

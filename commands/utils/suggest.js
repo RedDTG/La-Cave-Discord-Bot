@@ -1,4 +1,5 @@
 const { TextInputBuilder, TextInputStyle, ActionRowBuilder, ModalBuilder, SelectMenuBuilder } = require('discord.js');
+const databases = { config: require("../../data/config.json") }
 
 const filmModal = new ModalBuilder()
     .setCustomId('movie-modal')
@@ -138,7 +139,7 @@ module.exports = {
         {
             name: 'type',
             description: 'Quel type de média ?',
-            type: 3, 
+            type: 3,
             required: true,
             choices: [
                 {
@@ -161,12 +162,21 @@ module.exports = {
         },
     ],
     runInteraction: async (client, interaction) => {
-        const typeChoice = interaction.options.getString('type');
+        function isEmpty(obj) {
+            return JSON.stringify(obj) === '{}';
+        }
 
-        if (typeChoice == 'Anime') { await interaction.showModal(animeModal) };
-        if (typeChoice == 'Film') { await interaction.showModal(filmModal) };
-        if (typeChoice == 'Série') { await interaction.showModal(serieModal) };
-        if (typeChoice == 'Livre Audio') { await interaction.showModal(audiobookModal) };
+        if (isEmpty(databases.config)) {
+            return interaction.reply({ content: `Aucun channel n'est configuré`, ephemeral: true });
+        } else if (!databases.config[interaction.guildId].hasOwnProperty('suggest')) {
+            return interaction.reply({ content: `Le channel pour la commande : **\`/suggest\`**, n'est pas configuré`, ephemeral: true });
+        } else {
+            const typeChoice = interaction.options.getString('type');
 
+            if (typeChoice == 'Anime') { await interaction.showModal(animeModal) };
+            if (typeChoice == 'Film') { await interaction.showModal(filmModal) };
+            if (typeChoice == 'Série') { await interaction.showModal(serieModal) };
+            if (typeChoice == 'Livre Audio') { await interaction.showModal(audiobookModal) };
+        }
     }
 }

@@ -20,9 +20,6 @@ const buttons = [
 module.exports = {
     name: 'serie-modal',
     runInteraction(client, interaction) {
-        if (!databases.config[interaction.guildId].suggest || !databases.config[interaction.guildId]) {
-            return interaction.reply({ content: `Le channel pour la commande : suggest, n'est pas configuré !`, ephemeral: true })
-        }
 
         const title = interaction.fields.getTextInputValue('suggest-title');
         const season = interaction.fields.getTextInputValue('suggest-season');

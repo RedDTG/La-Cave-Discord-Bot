@@ -26,9 +26,6 @@ module.exports = {
         const config = databases.config[interaction.guildId].animes;
         const notif = databases.notifications;
 
-        if (!config) {
-            return interaction.reply({ content: `Le channel pour la commande : animes, n'est pas configuré !`, ephemeral: true })
-        }
         
 
         //Jour de la semaine Anglais - Français
@@ -133,6 +130,8 @@ module.exports = {
         client.channels.cache.get(config).send({ embeds: [embed], components: buttons});
 
         return interaction.reply({ content: 'Cet animé a été ajouté dans la liste', ephemeral: true, mal_id });
+        
+        
 
     }
 };

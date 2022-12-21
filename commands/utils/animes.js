@@ -1,4 +1,5 @@
 const { TextInputBuilder, TextInputStyle, ActionRowBuilder, ModalBuilder, PermissionsBitField } = require('discord.js');
+const databases = { config: require("../../data/config.json") }
 
 const animesModal = new ModalBuilder()
     .setCustomId('animes-modal')
@@ -20,8 +21,19 @@ module.exports = {
     description: 'Ajoute un anime à la Saison actuelle !',
     permissions: [PermissionsBitField.Flags.ManageMessages],
     runInteraction: async (client, interaction) => {
+        function isEmpty(obj) {
+            return JSON.stringify(obj) === '{}';
+          }
 
-        await interaction.showModal(animesModal);
+        if (isEmpty(databases.config)) {
+            return interaction.reply({ content: `Aucun channel n'est configuré`, ephemeral: true });
+        } else if (!databases.config[interaction.guildId].hasOwnProperty('animes')){
+            return interaction.reply({ content: `Le channel pour la commande : **\`/add-anime\`**, n'est pas configuré`, ephemeral: true });
+        }else{
+            await interaction.showModal(animesModal);
+        }
+
+        
 
     }
 }
