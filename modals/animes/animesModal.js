@@ -2,6 +2,7 @@ const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder, PermissionsB
 const databases = { config: require("../../data/config.json"), notifications: require("../../data/notifications.json"), animes: require("../../data/animes.json") };
 const axios = require('axios');
 const { writeFile } = require('fs');
+const { threadId } = require('worker_threads');
 
 
 const buttons = [
@@ -11,21 +12,24 @@ const buttons = [
                 .setCustomId('animes-notification-button')
                 .setLabel(' 🔔 Notifications')
                 .setStyle(ButtonStyle.Secondary),
-
-            // new ButtonBuilder()
-            //     .setCustomId('animes-supprimer-button')
-            //     .setLabel('Supprimer cet anime')
-            //     .setStyle(ButtonStyle.Danger)
         )
 
+]
+const buttonMod =[
+    new ActionRowBuilder()
+    .addComponents(
+        new ButtonBuilder()
+            .setCustomId('animes-supprimer-button')
+            .setLabel('Supprimer cet anime')
+            .setStyle(ButtonStyle.Danger)
+    )
 ]
 
 module.exports = {
     name: 'animes-modal',
     async runInteraction(client, interaction) {
         const config = databases.config[interaction.guildId].animes;
-        const notif = databases.notifications;
-
+        let notif_ = databases.notifications;
         
 
         //Jour de la semaine Anglais - Français
@@ -67,7 +71,7 @@ module.exports = {
         
         //Récupération variable dans anime
         const { title, images, mal_id } = animeData;
-        if (mal_id in notif) return interaction.reply({ content: `L'anime est un doublon !`, ephemeral: true })
+        if ( notif_.includes(mal_id)) return interaction.reply({ content: `L'anime est un doublon !`, ephemeral: true })
 
         let {title_english} = animeData;
         if (!title_english) {title_english = title;};
@@ -89,7 +93,6 @@ module.exports = {
                 time = animeData[data].time;
                 let index = jour_semaine.nom_en.findIndex((en) => en === day);
 
-                console.log(day, time, index)
                 if (index !== -1) {
                     if (time < "07:00") {
                         index = index === 0 ? index = 6 : index -= 1;
@@ -121,17 +124,22 @@ module.exports = {
                 { name: `Jour`, value: jour, inline: true },
                 { name: `Heure`, value: `${realTimeHours}:${realTimeMinutes}`, inline: true },
             );
-        
-        if (!notif[mal_id]) {
-            notif[mal_id] = [];
-        } 
-        
-        writeFile("data/notifications.json", JSON.stringify(notif), (err) => { if (err) { console.log(err) } });
-        client.channels.cache.get(config).send({ embeds: [embed], components: buttons});
 
+
+        let newObject = { [mal_id]: []};
+        notif_.push(newObject);
+              
+        writeFile("data/notifications.json", JSON.stringify(notif_), (err) => { if (err) { console.log(err) } });
+
+        const channel = client.channels.cache.get(interaction.channelId);
+        const thread = channel.threads.cache.find(x => x.name === 'Gestion-Anime');
+        await thread.send({ embeds: [embed], components: buttonMod});
+
+        client.channels.cache.get(config).send({ embeds: [embed], components: buttons});
+        
+        
+        
         return interaction.reply({ content: 'Cet animé a été ajouté dans la liste', ephemeral: true, mal_id });
-        
-        
 
     }
 };

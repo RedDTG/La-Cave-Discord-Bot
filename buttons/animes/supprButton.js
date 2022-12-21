@@ -1,5 +1,5 @@
 const { PermissionsBitField } = require('discord.js');
-const databases = { animes: require("../../data/animes.json"), notifications: require("../../data/notifications.json") }
+const databases = { animes: require("../../data/animes.json"), notifications: require("../../data/notifications.json"), config: require("../../data/config.json"), }
 const { writeFile } = require('fs');
 
 
@@ -8,9 +8,22 @@ module.exports = {
     permissions: [PermissionsBitField.Flags.ManageMessages],
     runInteraction(client, interaction) {
 
+        const config = databases.config[interaction.guildId].animes;
+
         if (databases.animes[interaction.message.id]) {
-            const index = databases.animes[interaction.message.id].id;
-            delete databases.notifications[index];
+            const id = databases.animes[interaction.message.id].message_id;
+            client.channels.fetch(config).then(channel => {
+                channel.messages.delete(id);
+            });
+            
+            const index = databases.notifications.findIndex(obj => Object.keys(obj)[0] === databases.animes[interaction.message.id].id);
+            if (index !== -1) {
+                console.log(databases.notifications);
+                databases.notifications.splice(index, 1);
+                console.log(databases.notifications);
+            }
+
+            //delete databases.notifications[index];
             writeFile("data/notifications.json", JSON.stringify(databases.notifications), (err) => { if (err) { console.log(err) } });
 
             delete databases.animes[interaction.message.id];
@@ -18,6 +31,8 @@ module.exports = {
         }
 
         interaction.message.delete();
+
+        
 
         return interaction.reply({ content: 'Anime supprimé !', ephemeral: true })
     }

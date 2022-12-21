@@ -23,7 +23,7 @@ module.exports = {
     runInteraction: async (client, interaction) => {
         function isEmpty(obj) {
             return JSON.stringify(obj) === '{}';
-          }
+        }
 
         if (isEmpty(databases.config)) {
             return interaction.reply({ content: `Aucun channel n'est configuré`, ephemeral: true });

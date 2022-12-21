@@ -8,19 +8,18 @@ module.exports = {
     permissions: [],
     runInteraction(client, interaction) {
 
-        anime = databases.animes[interaction.message.id];
-        notif = databases.notifications[anime.id];
-        console.log(notif);
-
-        console.log(`${interaction.user.id} Tu as appuyé sur : ${anime.id}, ${anime.title}`)
+        
+        const value = Object.values(databases.animes).find(o => o.message_id === interaction.message.id);
+        notif = databases.notifications[value.id];
+        
         let content="";
         if(notif.includes(interaction.user.id))
         {
             notif.pop();
-            content=`Tu as enlevé **\`${anime.title}\`** de ta liste - **\`/list\`** pour voir tous tes animes`
+            content=`Tu as enlevé **\`${value.title}\`** de ta liste - **\`/list\`** pour voir tous tes animes`
         }else{
             notif.push(interaction.user.id);
-            content=`Tu as ajouté **\`${anime.title}\`** à ta liste de notification`
+            content=`Tu as ajouté **\`${value.title}\`** à ta liste de notification`
         }
         
         
