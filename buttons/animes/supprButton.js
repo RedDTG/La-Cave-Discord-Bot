@@ -1,5 +1,5 @@
 const { PermissionsBitField } = require('discord.js');
-const databases = { animes: require("../../data/animes.json") }
+const databases = { animes: require("../../data/animes.json"), notifications: require("../../data/notifications.json") }
 const { writeFile } = require('fs');
 
 
@@ -9,6 +9,10 @@ module.exports = {
     runInteraction(client, interaction) {
 
         if (databases.animes[interaction.message.id]) {
+            const index = databases.animes[interaction.message.id].id;
+            delete databases.notifications[index];
+            writeFile("data/notifications.json", JSON.stringify(databases.notifications), (err) => { if (err) { console.log(err) } });
+
             delete databases.animes[interaction.message.id];
             writeFile("data/animes.json", JSON.stringify(databases.animes), (err) => { if (err) { console.log(err) } });
         }

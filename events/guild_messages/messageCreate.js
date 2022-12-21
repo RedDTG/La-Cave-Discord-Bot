@@ -1,16 +1,14 @@
-const databases = { suggest: require("../../data/suggest.json"), report: require("../../data/report.json"), animes: require("../../data/animes.json"), config: require("../../data/config.json") }
+const databases = { suggest: require("../../data/suggest.json"), report: require("../../data/report.json"), animes: require("../../data/animes.json"), config: require("../../data/config.json"), notifications: require("../../data/notifications.json")  }
 const { writeFile } = require('fs');
 
 module.exports = {
     name: 'messageCreate',
     once: false,
     execute(client, message) {
-
         const config = databases.config[message.guildId];
-
         if (config) {
             let commands = ['report', 'suggest', 'animes'];
-        
+            
             commands.forEach(command => {
         
                 if ((message.type == 18) && config.hasOwnProperty(command)) {
@@ -21,12 +19,19 @@ module.exports = {
                 
                 if (config.hasOwnProperty(command)) {
                     if (message.author.bot && (message.channel.id == config[command]) && (message.embeds.length == 1)) {
+                        let id;
+                        if (command === "animes") {
+                            const notif = databases.notifications;
+                            const keys = Object.keys(notif);
+                            id = keys[keys.length - 1];
+                        }
                         let author = client.users.cache.find(user => user.username == message.embeds[0].footer.text.split("#")[0]).id;
                         databases[command][message.id] = {
                             author: author,
                             title: message.embeds[0].title,
                             // Ajout de media pour la propriété 'report' uniquement
                             media: command === 'report' ? message.embeds[0].fields[0].value : undefined,
+                            id: command === 'animes' ? id : undefined,
                         };
                     }
         

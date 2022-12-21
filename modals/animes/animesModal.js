@@ -1,6 +1,7 @@
-const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder, PermissionsBitField } = require('discord.js');
-const databases = { config: require("../../data/config.json") };
+const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder, PermissionsBitField, TextInputBuilder } = require('discord.js');
+const databases = { config: require("../../data/config.json"), notifications: require("../../data/notifications.json"), animes: require("../../data/animes.json") };
 const axios = require('axios');
+const { writeFile } = require('fs');
 
 
 const buttons = [
@@ -23,9 +24,12 @@ module.exports = {
     name: 'animes-modal',
     async runInteraction(client, interaction) {
         const config = databases.config[interaction.guildId].animes;
+        const notif = databases.notifications;
+
         if (!config) {
             return interaction.reply({ content: `Le channel pour la commande : animes, n'est pas configuré !`, ephemeral: true })
         }
+        
 
         //Jour de la semaine Anglais - Français
         const jour_semaine = {
@@ -62,11 +66,12 @@ module.exports = {
         
         //Récupération final anime
         const animeData = await response.data.data[index];
-        console.log(animeData);
         if (!animeData) return interaction.reply({ content: "Anime not found", ephemeral: true });
         
         //Récupération variable dans anime
         const { title, images, mal_id } = animeData;
+        if (mal_id in notif) return interaction.reply({ content: `L'anime est un doublon !`, ephemeral: true })
+
         let {title_english} = animeData;
         if (!title_english) {title_english = title;};
         const { webp } = images;
@@ -119,10 +124,15 @@ module.exports = {
                 { name: `Jour`, value: jour, inline: true },
                 { name: `Heure`, value: `${realTimeHours}:${realTimeMinutes}`, inline: true },
             );
-
-        client.channels.cache.get(config).send({ embeds: [embed], components: buttons });
         
-        return interaction.reply({ content: 'Cet animé a été ajouté dans la liste', ephemeral: true });
+        if (!notif[mal_id]) {
+            notif[mal_id] = [];
+        } 
+        
+        writeFile("data/notifications.json", JSON.stringify(notif), (err) => { if (err) { console.log(err) } });
+        client.channels.cache.get(config).send({ embeds: [embed], components: buttons});
+
+        return interaction.reply({ content: 'Cet animé a été ajouté dans la liste', ephemeral: true, mal_id });
 
     }
 };
