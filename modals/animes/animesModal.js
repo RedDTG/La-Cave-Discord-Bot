@@ -71,7 +71,10 @@ module.exports = {
         
         //Récupération variable dans anime
         const { title, images, mal_id } = animeData;
-        if ( notif_.includes(mal_id)) return interaction.reply({ content: `L'anime est un doublon !`, ephemeral: true })
+        const exists = notif_.some(obj => Object.keys(obj)[0] === String(mal_id));
+        if (exists) {
+            return interaction.reply({ content: `L'anime est un doublon !`, ephemeral: true });
+        }
 
         let {title_english} = animeData;
         if (!title_english) {title_english = title;};
