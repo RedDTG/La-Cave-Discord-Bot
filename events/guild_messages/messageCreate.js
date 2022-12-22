@@ -11,17 +11,22 @@ module.exports = {
         let command = false;
         let thread;
         let channel;
-        if (message.type !== 21 && message.type !== 19 && message.guildId !== null){
+        if (message.type !== 21 && message.type !== 19 && message.guildId !== null && message.embeds.length !== 0){
             channel = message.guild.channels.cache.get(config["animes"])
-            thread = channel.threads.cache.find(x => x.name === 'Gestion-Anime');
+            if (channel !== undefined){
+                thread = channel.threads.cache.find(x => x.name === 'Gestion-Anime');
             
-            if (thread.parentId === message.channelId || thread.id === message.channelId) {
-                command = "animes";
-            } else if (message.channelId === config["suggest"]) {
+                if (thread.parentId === message.channelId || thread.id === message.channelId) {
+                    command = "animes";
+                }
+            }
+
+            if (message.channelId === config["suggest"]) {
                 command = "suggest";
             } else if (message.channelId === config["report"]) {
                 command = "report";
             }
+            
 
         }
         if (command && config && (message.interaction === null) && (message.author.bot) && (message.type !== 19 && message.type !== 1 && message.type !== 21) && ( message.embeds.length !== 0)) {
@@ -40,7 +45,13 @@ module.exports = {
                     const dernier_objet = notif[notif.length - 1];
                     id = Object.keys(dernier_objet)[Object.keys(dernier_objet).length - 1];
                 }
-                if (message.channelId !== thread.parentId) {
+                let compare;
+                if(channel === undefined){
+                    compare = (message.channelId === config[command]); 
+                }else{
+                    compare = (message.channelId !== thread.parentId); 
+                }
+                if (compare) {
                     
                     message_value = message.id;
                     let author = client.users.cache.find(user => user.username == message.embeds[0].footer.text.split("#")[0]).id;
@@ -72,9 +83,7 @@ module.exports = {
                 writeFile(`data/${command}.json`, JSON.stringify(databases[command]), (err) => { if (err) { console.log(err) } });
             }
 
-
         }
-
 
         if (!message.author.bot && message.content.startsWith("+suggest")) {
             return message.reply({ content: `La commande +suggest n'existe plus ! Veuillez utiliser /suggest à la place !` });

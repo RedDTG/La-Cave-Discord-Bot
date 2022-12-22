@@ -67,11 +67,12 @@ module.exports = {
             } else {
 
                 config[typeChoice] = channelChoice.id;
+                console.log(typeChoice)
                 if (typeChoice === "animes"){
                     const thread = await channelChoice.threads.create({
                         name: 'Gestion-Anime',
                         autoArchiveDuration: 10080,
-                        type: ChannelType.PrivateThread,
+                        type: ChannelType.GuildPrivateThread,
                         reason: 'Needed a separate thread for moderation',
                     });
                     await thread.members.add(interaction.user.id);
