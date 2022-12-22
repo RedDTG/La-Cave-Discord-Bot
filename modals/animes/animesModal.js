@@ -140,9 +140,7 @@ module.exports = {
 
         client.channels.cache.get(config).send({ embeds: [embed], components: buttons});
         
-        
-        
-        return interaction.reply({ content: 'Cet animé a été ajouté dans la liste', ephemeral: true, mal_id });
+        return interaction.reply({ content: 'Cet animé a été ajouté dans la liste', ephemeral: true });
 
     }
 };

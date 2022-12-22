@@ -49,29 +49,38 @@ module.exports = {
         if (!databases.config[interaction.guildId]) {
             databases.config[interaction.guildId] = {}
         }
-
-        if (!databases.config[interaction.guildId].hasOwnProperty(typeChoice)){
-            const config = databases.config[interaction.guildId];
+        
+        if (!databases.config[interaction.guildId].hasOwnProperty(typeChoice) || deleteChoice ){
+            let config = databases.config[interaction.guildId];
             if (deleteChoice) {
-                delete config[typeChoice];
-                interaction.reply({content: `Le channel ${channelChoice} a été dé-configuré pour la commande : ${typeChoice}`,ephemeral: true});
-                const thread = channelChoice.threads.cache.find(x => x.name === 'Gestion-Anime');
-                await thread.delete();
-    
-            } else {
+                if (!databases.config[interaction.guildId].hasOwnProperty(typeChoice)){
+                    interaction.reply({content: `Aucun channel n'est pas encore configuré pour la commande : **\`${typeChoice}\`**`,ephemeral: true});
+                }else {
+                    delete config[typeChoice];
+                    interaction.reply({content: `Le channel ${channelChoice} a été dé-configuré pour la commande : **\`${typeChoice}\`**`,ephemeral: true});
+                    if (typeChoice === "animes"){
+                        const thread = channelChoice.threads.cache.find(x => x.name === 'Gestion-Anime');
+                        await thread.delete();
+                    }
+                }
                 
-                config[typeChoice] = channelChoice.id;
-                interaction.reply({content: `Le channel ${channelChoice} a été configuré pour la commande : ${typeChoice}`,ephemeral: true});
-    
-                const thread = await channelChoice.threads.create({
-                    name: 'Gestion-Anime',
-                    autoArchiveDuration: 10080,
-                    type: ChannelType.PrivateThread,
-                    reason: 'Needed a separate thread for moderation',
-                });
-                await thread.members.add(interaction.user.id);
-            }
+            } else {
 
+                config[typeChoice] = channelChoice.id;
+                if (typeChoice === "animes"){
+                    const thread = await channelChoice.threads.create({
+                        name: 'Gestion-Anime',
+                        autoArchiveDuration: 10080,
+                        type: ChannelType.PrivateThread,
+                        reason: 'Needed a separate thread for moderation',
+                    });
+                    await thread.members.add(interaction.user.id);
+                }
+                
+                
+                await interaction.reply({content: `Le channel ${channelChoice} a été configuré pour la commande : **\`${typeChoice}\`**`,ephemeral: true});
+
+            }
             writeFile("data/config.json", JSON.stringify(databases.config), (err) => {
                 if (err) {
                     console.log(err);

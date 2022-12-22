@@ -5,19 +5,21 @@ const { writeFile } = require('fs');
 module.exports = {
     name: 'messageCreate',
     once: false,
-    execute(client, message) {
+    execute(client, message) {     
         const config = databases.config[message.guildId];
-        if (config && (message.interaction === null) && (message.author.bot) && (message.type !== 19)) {
+        if (config && (message.interaction === null) && (message.author.bot) && (message.type !== 19 && message.type !== 20 && message.type !== 1)) {
+            
             let commands = ['report', 'suggest', 'animes'];
             commands.forEach(command => {
 
-                if ((message.type == 18) && config.hasOwnProperty(command)) {
+                if ((message.type === 18) && config.hasOwnProperty("report") && command === "report") {
+                    console.log("JEANJEAN"+message.type);
                     if (message.channel.id == config[command]) {
                         message.delete();
                     }
                 }
 
-                if (config.hasOwnProperty(command)) {
+                if (config.hasOwnProperty(command) && (message.type !== 18 && message.type !== 1 )) {
                     let id;
                     let message_value;
                     //console.log(message);

@@ -18,9 +18,7 @@ module.exports = {
             
             const index = databases.notifications.findIndex(obj => Object.keys(obj)[0] === databases.animes[interaction.message.id].id);
             if (index !== -1) {
-                console.log(databases.notifications);
                 databases.notifications.splice(index, 1);
-                console.log(databases.notifications);
             }
 
             //delete databases.notifications[index];

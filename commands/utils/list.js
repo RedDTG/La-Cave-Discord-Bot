@@ -15,19 +15,13 @@ module.exports = {
             return obj[key].includes(interaction.user.id);
           }).map(obj => Object.keys(obj)[0]);
 
-        console.log(keys);
-
         let title = "";
         keys.forEach(key => {
-            console.log(key);
             title += "- ";
             title += Object.values(animes).find(item => item.id === String(key)).title;
             title += "\n";
         });
-
-          
-
-          
+        if (title === "") title = "Pas encore de notifications pour toi :)";
         
         return interaction.reply({ content: ` Voici votre liste : \n \`\`\`${title}\`\`\``, ephemeral: true });
         
