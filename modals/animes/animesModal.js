@@ -134,7 +134,7 @@ module.exports = {
               
         writeFile("data/notifications.json", JSON.stringify(notif_), (err) => { if (err) { console.log(err) } });
 
-        const channel = client.channels.cache.get(interaction.channelId);
+        const channel = client.channels.cache.get(config);
         const thread = channel.threads.cache.find(x => x.name === 'Gestion-Anime');
         await thread.send({ embeds: [embed], components: buttonMod});
 
