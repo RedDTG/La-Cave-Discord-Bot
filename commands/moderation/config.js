@@ -85,7 +85,7 @@ module.exports = {
             }else{
                 return interaction.reply({content: `Merci de faire un vrai choix :)`,ephemeral: true});
             }
-            writeFile("data/config.json", JSON.stringify(config), (err) => {
+            writeFile("data/config.json", JSON.stringify(databases.config), (err) => {
                 if (err) {
                     console.log(err);
                 }
