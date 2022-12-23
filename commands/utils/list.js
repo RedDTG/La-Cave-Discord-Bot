@@ -4,7 +4,7 @@ const databases = { config: require("../../data/config.json"), notifications: re
 
 module.exports = {
     name: 'list',
-    description: 'Ajoute un anime à la Saison actuelle !',
+    description: 'Liste les animes auxquels tu es notifié !',
     permissions: [],
     runInteraction: async (client, interaction) => {
         notifs = databases.notifications;
@@ -23,7 +23,7 @@ module.exports = {
         });
         if (title === "") title = "Pas encore de notifications pour toi :)";
         
-        return interaction.reply({ content: ` Voici votre liste : \n \`\`\`${title}\`\`\``, ephemeral: true });
+        return interaction.reply({ content: ` Voici ta liste : \n \`\`\`${title}\`\`\``, ephemeral: true });
         
         
 

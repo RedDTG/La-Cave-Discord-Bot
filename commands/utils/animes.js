@@ -17,7 +17,7 @@ const animesModal = new ModalBuilder()
 
 
 module.exports = {
-    name: 'animes',
+    name: 'add-anime',
     description: 'Ajoute un anime à la Saison actuelle !',
     permissions: [PermissionsBitField.Flags.ManageMessages],
     runInteraction: async (client, interaction) => {
