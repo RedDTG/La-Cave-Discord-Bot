@@ -31,7 +31,7 @@ module.exports = {
             name: 'channel',
             description: 'Quel channel assigner ?',
             type: 7, //channel type
-            required: true,
+            required: false,
         },
         {
             name: 'delete',
@@ -56,15 +56,15 @@ module.exports = {
                 if (!databases.config[interaction.guildId].hasOwnProperty(typeChoice)){
                     interaction.reply({content: `Aucun channel n'est pas encore configuré pour la commande : **\`${typeChoice}\`**`,ephemeral: true});
                 }else {
+                    interaction.reply({content: `Le channel <#${config[typeChoice]}> a été dé-configuré pour la commande : **\`${typeChoice}\`**`,ephemeral: true});
                     delete config[typeChoice];
-                    interaction.reply({content: `Le channel ${channelChoice} a été dé-configuré pour la commande : **\`${typeChoice}\`**`,ephemeral: true});
                     if (typeChoice === "animes"){
                         const thread = channelChoice.threads.cache.find(x => x.name === 'Gestion-Anime');
                         await thread.delete();
                     }
                 }
                 
-            } else {
+            } else if (channelChoice){
 
                 config[typeChoice] = channelChoice.id;
                 if (typeChoice === "animes"){
@@ -78,10 +78,12 @@ module.exports = {
                 }
                 
                 
-                await interaction.reply({content: `Le channel ${channelChoice} a été configuré pour la commande : **\`${typeChoice}\`**`,ephemeral: true});
+                await interaction.reply({content: `Le channel <#${config[typeChoice]}> a été configuré pour la commande : **\`${typeChoice}\`**`,ephemeral: true});
 
+            }else{
+                return interaction.reply({content: `Merci de faire un vrai choix :)`,ephemeral: true});
             }
-            writeFile("data/config.json", JSON.stringify(databases.config), (err) => {
+            writeFile("data/config.json", JSON.stringify(config), (err) => {
                 if (err) {
                     console.log(err);
                 }
