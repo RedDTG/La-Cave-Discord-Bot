@@ -67,7 +67,6 @@ module.exports = {
             } else {
 
                 config[typeChoice] = channelChoice.id;
-                console.log(typeChoice)
                 if (typeChoice === "animes"){
                     const thread = await channelChoice.threads.create({
                         name: 'Gestion-Anime',

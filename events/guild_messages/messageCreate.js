@@ -7,14 +7,13 @@ module.exports = {
     once: false,
     execute(client, message) {
         const config = databases.config[message.guildId];
-        console.log(message.type, message.author.bot);
         let id;
+        let channelThreadId;
         let message_value;
         let command = false;
-        const msg_type = [1, 18, 19, 21];
+        const msg_type = [0, 20];
 
-        if (message.guildId !== null && message.author.bot && (message.type in msg_type) && message.embeds.length !== 0) {
-
+        if (message.guildId !== null && message.author.bot && (msg_type.includes(message.type)) && message.embeds.length !== 0) {
             if (message.channelId === config["suggest"]) {
                 command = "suggest";
             } else if (message.channelId === config["report"]) {
@@ -25,6 +24,7 @@ module.exports = {
 
                 if (thread.parentId === message.channelId || thread.id === message.channelId) {
                     command = "animes";
+                    channelThreadId = thread.parentId;
                     const notif = databases.notifications;
                     const dernier_objet = notif[notif.length - 1];
                     id = Object.keys(dernier_objet)[Object.keys(dernier_objet).length - 1];
@@ -34,31 +34,25 @@ module.exports = {
             if (command) {
                 
                 let compare;
-                if (command === "animes") { compare = (message.channelId !== thread.parentId) }
+                if (command === "animes") { compare = (message.channelId !== channelThreadId) }
                 else {
                     compare = (message.channelId === config[command]);
                 }
-                console.log("suite : " + command, config, compare);
                 if (compare) {
                     message_value = message.id;
                 } else {
-                    const value = Object.values(databases[command]).find(o => o.id === id);  // value = { author: '332556979220381699', title: 'My Hero Academia - Saison 6', id: '49918', message_id: '1055204924692103268' }
-                    const index = Object.values(databases[command]).indexOf(value);  // index = 0
+                    const value = Object.values(databases[command]).find(o => o.id === id); 
+                    const index = Object.values(databases[command]).indexOf(value); 
                     const key = Object.keys(databases[command])[index];
-                    //console.log(value, index, key);
                     message_value = key;
                 };
-                const author = client.users.cache.find(user => user.username == message.embeds[0].footer.text.split("#")[0]).id;
                 databases[command][message_value] = {
-                    author: author,
+                    author: command !== 'animes' ? client.users.cache.find(user => user.username == message.embeds[0].footer.text.split("#")[0]).id : undefined,
                     title: message.embeds[0].title,
-                    // Ajout de media pour la propriété 'report' uniquement
                     media: command === 'report' ? message.embeds[0].fields[0].value : undefined,
                     id: command === 'animes' ? id : undefined,
                     message_id: command === 'animes' ? message.id : undefined,
                 }
-                console.log(message_value);
-                console.log(databases[command][message_value]);
 
                 writeFile(`data/${command}.json`, JSON.stringify(databases[command]), (err) => { if (err) { console.log(err) } });
             }
