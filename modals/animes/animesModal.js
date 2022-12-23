@@ -45,6 +45,8 @@ module.exports = {
         //Appel API pour données
         const url_name = `https://www.livechart.me/api/v1/anime?q=${titre}`;
         const response_name = await axios.get(url_name);
+        if (response_name.data.items.length === 0) return interaction.reply({ content: "Anime not found", ephemeral: true });
+        
         const { native_title, romaji_title } = response_name.data.items[index];
         let title_ = encodeURIComponent(native_title.replace("-", " "));
         let url = `https://api.jikan.moe/v4/anime?order_by=popularity&sort=asc&type=tv&status=airing&q=${title_}`;
@@ -54,7 +56,7 @@ module.exports = {
             url = `https://api.jikan.moe/v4/anime?order_by=popularity&sort=asc&type=tv&status=airing&q=${title_}`;
             response = await axios.get(url);
         }
-
+        if (response.data.data.length === 0) return interaction.reply({ content: "Anime not found", ephemeral: true });
         //Approved Anime
         let approved = await response.data.data[index].approved;
         if (!approved){
@@ -68,7 +70,7 @@ module.exports = {
         //Récupération final anime
         const animeData = await response.data.data[index];
         if (!animeData) return interaction.reply({ content: "Anime not found", ephemeral: true });
-        
+
         //Récupération variable dans anime
         const { title, images, mal_id } = animeData;
         const exists = notif_.some(obj => Object.keys(obj)[0] === String(mal_id));
