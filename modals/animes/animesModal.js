@@ -122,7 +122,6 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle(titre_anime)
             .setThumbnail(URL_POSTER)
-            .setFooter({text: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
             .addFields(
                 { name: `Jour`, value: jour, inline: true },
                 { name: `Heure`, value: `${realTimeHours}:${realTimeMinutes}`, inline: true },
