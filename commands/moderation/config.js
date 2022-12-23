@@ -57,11 +57,13 @@ module.exports = {
                     interaction.reply({content: `Aucun channel n'est pas encore configuré pour la commande : **\`${typeChoice}\`**`,ephemeral: true});
                 }else {
                     interaction.reply({content: `Le channel <#${config[typeChoice]}> a été dé-configuré pour la commande : **\`${typeChoice}\`**`,ephemeral: true});
-                    delete config[typeChoice];
+                    
                     if (typeChoice === "animes"){
-                        const thread = channelChoice.threads.cache.find(x => x.name === 'Gestion-Anime');
+                        const fetchedChannel = interaction.guild.channels.cache.get(config[typeChoice]);
+                        const thread = fetchedChannel.threads.cache.find(x => x.name === 'Gestion-Anime');
                         await thread.delete();
                     }
+                    delete config[typeChoice];
                 }
                 
             } else if (channelChoice){
