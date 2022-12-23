@@ -53,7 +53,7 @@ module.exports = {
         if (!databases.config[interaction.guildId].hasOwnProperty(typeChoice) || deleteChoice ){
             let config = databases.config[interaction.guildId];
             if (deleteChoice) {
-                if (!databases.config[interaction.guildId].hasOwnProperty(typeChoice)){
+                if (!config.hasOwnProperty(typeChoice)){
                     interaction.reply({content: `Aucun channel n'est pas encore configuré pour la commande : **\`${typeChoice}\`**`,ephemeral: true});
                 }else {
                     interaction.reply({content: `Le channel <#${config[typeChoice]}> a été dé-configuré pour la commande : **\`${typeChoice}\`**`,ephemeral: true});
