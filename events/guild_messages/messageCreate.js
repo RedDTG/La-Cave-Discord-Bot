@@ -6,14 +6,17 @@ module.exports = {
     name: 'messageCreate',
     once: false,
     execute(client, message) {
-        const config = databases.config[message.guildId];
-        let id;
-        let channelThreadId;
-        let message_value;
-        let command = false;
+        
         const msg_type = [0, 20];
 
-        if (message.guildId !== null && message.author.bot && (msg_type.includes(message.type)) && message.embeds.length !== 0) {
+        if (message.guildId !== null && message.author.bot && (msg_type.includes(message.type)) && message.embeds.length !== 0 && message.webhookId === null) {
+            const config = databases.config[message.guildId];
+            let id;
+            let channelThreadId;
+            let message_value;
+            let command = false;
+            
+            console.log(message.webhookId)
             if (message.channelId === config["suggest"]) {
                 command = "suggest";
             } else if (message.channelId === config["report"]) {
@@ -63,7 +66,7 @@ module.exports = {
 
 
         if (!message.author.bot && message.content.startsWith("+suggest")) {
-            return message.reply({ content: `La commande +suggest n'existe plus ! Veuillez utiliser **\`/suggest\`** à la place !`, ephemeral: true });
+            return message.reply({ content: `La commande +suggest n'existe plus ! Veuillez utiliser **\`/suggest\`** à la place !` });
         }
 
         // if (message.author.bot) return;
