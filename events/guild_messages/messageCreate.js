@@ -6,7 +6,7 @@ module.exports = {
     name: 'messageCreate',
     once: false,
     execute(client, message) {
-        
+
         const msg_type = [0, 20];
 
         if (message.guildId !== null && message.author.bot && (msg_type.includes(message.type)) && message.embeds.length !== 0 && message.webhookId === null) {
@@ -15,8 +15,7 @@ module.exports = {
             let channelThreadId;
             let message_value;
             let command = false;
-            
-            console.log(message.webhookId)
+
             if (message.channelId === config["suggest"]) {
                 command = "suggest";
             } else if (message.channelId === config["report"]) {
@@ -35,7 +34,7 @@ module.exports = {
             }
 
             if (command) {
-                
+
                 let compare;
                 if (command === "animes") { compare = (message.channelId !== channelThreadId) }
                 else {
@@ -44,8 +43,8 @@ module.exports = {
                 if (compare) {
                     message_value = message.id;
                 } else {
-                    const value = Object.values(databases[command]).find(o => o.id === id); 
-                    const index = Object.values(databases[command]).indexOf(value); 
+                    const value = Object.values(databases[command]).find(o => o.id === id);
+                    const index = Object.values(databases[command]).indexOf(value);
                     const key = Object.keys(databases[command])[index];
                     message_value = key;
                 };
@@ -60,10 +59,7 @@ module.exports = {
                 writeFile(`data/${command}.json`, JSON.stringify(databases[command]), (err) => { if (err) { console.log(err) } });
             }
 
-
         }
-
-
 
         if (!message.author.bot && message.content.startsWith("+suggest")) {
             return message.reply({ content: `La commande +suggest n'existe plus ! Veuillez utiliser **\`/suggest\`** à la place !` });
