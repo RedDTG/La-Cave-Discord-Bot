@@ -135,6 +135,11 @@ module.exports = {
               
         writeFile("data/notifications.json", JSON.stringify(notif_), (err) => { if (err) { console.log(err) } });
 
+        const channel_calendar = interaction.guild.channels.cache.get(config["calendar"]);
+        const calendar_msg = await channel_calendar.messages.fetch(config["calendar_msg_id"]);
+
+        
+
         const channel = client.channels.cache.get(config);
         const thread = channel.threads.cache.find(x => x.name === 'Gestion-Anime');
         await thread.send({ embeds: [embed], components: buttonMod});

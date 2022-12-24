@@ -1,6 +1,19 @@
-const { PermissionsBitField, ChannelType } = require('discord.js');
+const { PermissionsBitField, ChannelType, EmbedBuilder } = require('discord.js');
 const databases = { config: require("../../data/config.json") }
 const { writeFile } = require('fs');
+const axios = require('axios');
+
+const embed_animes = new EmbedBuilder()
+    .setTitle("Anime - ")
+    .addFields(
+        { name: `Lundi`, value: '``` ```', inline: false },
+        { name: `Mardi`, value: '``` ```', inline: false },
+        { name: `Mercredi`, value: '``` ```', inline: false },
+        { name: `Jeudi`, value: '``` ```', inline: false },
+        { name: `Vendredi`, value: '``` ```', inline: false },
+        { name: `Samedi`, value: '``` ```', inline: false },
+        { name: `Dimanche`, value: '``` ```', inline: false },
+    );
 
 module.exports = {
     name: 'config',
@@ -34,6 +47,12 @@ module.exports = {
             required: false,
         },
         {
+            name: 'calendrier',
+            description: 'Quel channel assigner pour le calendrier ?',
+            type: 7, //channel type
+            required: false,
+        },
+        {
             name: 'delete',
             description: 'Voulez vous le supprimer ?',
             type: 5, 
@@ -44,12 +63,13 @@ module.exports = {
 
         const typeChoice = interaction.options.getString('type');
         const channelChoice = interaction.options.getChannel('channel');
+        const calendarChoice = interaction.options.getChannel('calendrier');
         const deleteChoice = interaction.options.getBoolean('delete');
 
         if (!databases.config[interaction.guildId]) {
             databases.config[interaction.guildId] = {}
         }
-        
+
         if (!databases.config[interaction.guildId].hasOwnProperty(typeChoice) || deleteChoice ){
             let config = databases.config[interaction.guildId];
             if (deleteChoice) {
@@ -58,15 +78,30 @@ module.exports = {
                 }else {
                     interaction.reply({content: `Le channel <#${config[typeChoice]}> a été dé-configuré pour la commande : **\`${typeChoice}\`**`,ephemeral: true});
                     
+                    const channel = interaction.guild.channels.cache.get(config["calendar"]);
+                    const calendar_msg = await channel.messages.fetch(config["calendar_msg_id"]);
+                    calendar_msg.delete();
+
                     if (typeChoice === "animes"){
                         const fetchedChannel = interaction.guild.channels.cache.get(config[typeChoice]);
                         const thread = fetchedChannel.threads.cache.find(x => x.name === 'Gestion-Anime');
                         await thread.delete();
                     }
                     delete config[typeChoice];
+                    delete config["calendar"];
+                    delete config["calendar_msg_id"];
                 }
                 
-            } else if (channelChoice){
+            } else if (channelChoice && calendarChoice){
+
+                let url = 'https://www.livechart.me/api/v1/charts/nearest';         
+                const response = await axios.get(url);
+                const nom_saison = response.data.title;
+
+                embed_animes.setTitle('Anime - '+ nom_saison);
+                const calendar_msg = await client.channels.cache.get(calendarChoice.id).send({ embeds: [embed_animes] });
+                config["calendar"] = calendarChoice.id;
+                config["calendar_msg_id"] = calendar_msg.id;
 
                 config[typeChoice] = channelChoice.id;
                 if (typeChoice === "animes"){
@@ -90,6 +125,7 @@ module.exports = {
                     console.log(err);
                 }
                 });
+
         }else{
             return interaction.reply({ content: `Le channel pour la commande : **\`${typeChoice}\`**, est déjà configuré`, ephemeral: true });
         }
