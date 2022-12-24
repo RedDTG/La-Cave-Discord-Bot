@@ -28,7 +28,7 @@ const buttonMod =[
 module.exports = {
     name: 'animes-modal',
     async runInteraction(client, interaction) {
-        const config = databases.config[interaction.guildId].animes;
+        const config = databases.config[interaction.guildId];
         let notif_ = databases.notifications;
         
 
@@ -133,18 +133,37 @@ module.exports = {
         let newObject = { [mal_id]: []};
         notif_.push(newObject);
               
-        writeFile("data/notifications.json", JSON.stringify(notif_), (err) => { if (err) { console.log(err) } });
-
-        const channel_calendar = interaction.guild.channels.cache.get(config["calendar"]);
+        const channel_calendar = await interaction.guild.channels.cache.get(config["calendar"]);
         const calendar_msg = await channel_calendar.messages.fetch(config["calendar_msg_id"]);
 
+        //récupération du message actuel
+        const embed_calendar = await calendar_msg.embeds[0];
+
+        //modification de la ligne (avec détéction du jour)
+        embed_calendar.fields.forEach((semaine, index)=>{
+            if (jour.toLowerCase() === semaine.name.toLowerCase()){
+                embed_calendar.fields[index].value = embed_calendar.fields[index].value.replaceAll("`", ""); 
+                if (embed_calendar.fields[index].value === " "){
+                    embed_calendar.fields[index].value = "- "+titre_anime;
+                }else{
+                    embed_calendar.fields[index].value += "\n- "+titre_anime;
+                }
+                embed_calendar.fields[index].value = "```"+embed_calendar.fields[index].value+"```";
+            }
+        })
+
+        //notification
+        writeFile("data/notifications.json", JSON.stringify(notif_), (err) => { if (err) { console.log(err) } });
+
+        //modification du message
+        await  channel_calendar.messages.fetch(calendar_msg.id).then(msg => {msg.edit({ embeds: [embed_calendar]})});
         
 
-        const channel = client.channels.cache.get(config);
+        const channel = client.channels.cache.get(config["animes"]);
         const thread = channel.threads.cache.find(x => x.name === 'Gestion-Anime');
         await thread.send({ embeds: [embed], components: buttonMod});
 
-        client.channels.cache.get(config).send({ embeds: [embed], components: buttons});
+        client.channels.cache.get(config["animes"]).send({ embeds: [embed], components: buttons});
         
         return interaction.reply({ content: 'Cet animé a été ajouté dans la liste', ephemeral: true });
 

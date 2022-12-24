@@ -1,5 +1,5 @@
 const { PermissionsBitField, ChannelType, EmbedBuilder } = require('discord.js');
-const databases = { config: require("../../data/config.json") }
+const databases = { config: require("../../data/config.json"), notifications: require("../../data/notifications.json"), animes: require("../../data/animes.json")  }
 const { writeFile } = require('fs');
 const axios = require('axios');
 
@@ -77,19 +77,27 @@ module.exports = {
                     interaction.reply({content: `Aucun channel n'est pas encore configuré pour la commande : **\`${typeChoice}\`**`,ephemeral: true});
                 }else {
                     interaction.reply({content: `Le channel <#${config[typeChoice]}> a été dé-configuré pour la commande : **\`${typeChoice}\`**`,ephemeral: true});
-                    
-                    const channel = interaction.guild.channels.cache.get(config["calendar"]);
-                    const calendar_msg = await channel.messages.fetch(config["calendar_msg_id"]);
-                    calendar_msg.delete();
 
                     if (typeChoice === "animes"){
                         const fetchedChannel = interaction.guild.channels.cache.get(config[typeChoice]);
                         const thread = fetchedChannel.threads.cache.find(x => x.name === 'Gestion-Anime');
                         await thread.delete();
+
+                        const channel = interaction.guild.channels.cache.get(config["calendar"]);
+                        const calendar_msg = await channel.messages.fetch(config["calendar_msg_id"]);
+                        calendar_msg.delete();
+
+                        delete config["calendar"];
+                        delete config["calendar_msg_id"];
+                         //delete databases.notifications[index];
+                        databases.animes[interaction.guildId] = {};
+                        databases.notifications = [];
+                        writeFile("data/notifications.json", JSON.stringify(databases.notifications), (err) => { if (err) { console.log(err) } });
+                        writeFile("data/animes.json", JSON.stringify(databases.animes[interaction.guildId]), (err) => { if (err) { console.log(err) } });
+                
                     }
                     delete config[typeChoice];
-                    delete config["calendar"];
-                    delete config["calendar_msg_id"];
+                    
                 }
                 
             } else if (channelChoice && calendarChoice){
