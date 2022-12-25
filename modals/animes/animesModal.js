@@ -29,7 +29,7 @@ module.exports = {
     name: 'animes-modal',
     async runInteraction(client, interaction) {
         const config = databases.config[interaction.guildId];
-        let notif_ = databases.notifications;
+        const notif_ = databases.notifications;
         
 
         //Jour de la semaine Anglais - Français
@@ -130,7 +130,7 @@ module.exports = {
             );
 
 
-        let newObject = { [mal_id]: []};
+        const newObject = { [mal_id]: []};
         notif_.push(newObject);
               
         const channel_calendar = await interaction.guild.channels.cache.get(config["calendar"]);
