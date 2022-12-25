@@ -1,11 +1,12 @@
 const databases = { suggest: require("../../data/suggest.json"), report: require("../../data/report.json"), animes: require("../../data/animes.json"), config: require("../../data/config.json"), notifications: require("../../data/notifications.json") }
 const { MessageFlags } = require("discord.js");
 const { writeFile } = require('fs');
+const axios = require('axios');
 
 module.exports = {
     name: 'messageCreate',
     once: false,
-    execute(client, message) {
+    async execute(client, message) {
 
         const msg_type = [0, 20];
 
@@ -15,6 +16,8 @@ module.exports = {
             let channelThreadId;
             let message_value;
             let command = false;
+            let jour;
+            let time;
 
             if (message.channelId === config["suggest"]) {
                 command = "suggest";
@@ -30,6 +33,32 @@ module.exports = {
                     const notif = databases.notifications;
                     const dernier_objet = notif[notif.length - 1];
                     id = Object.keys(dernier_objet)[Object.keys(dernier_objet).length - 1];
+
+                    const url = `https://api.jikan.moe/v4/anime/${id}`;
+                    const response = await axios.get(url);
+                    //Date de Japon  à france   
+                    const jour_semaine = {
+                        nom_fr: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
+                        nom_en: ["Mondays", "Tuesdays", "Wednesdays", "Thursdays", "Fridays", "Saturdays", "Sundays"]
+                    };
+                    
+                    for (const data in response.data.data) {
+                        if (data === "broadcast") {
+                            const day = response.data.data[data].day;
+                            time = response.data.data[data].time;
+                            let index = jour_semaine.nom_en.findIndex((en) => en === day);
+
+                            if (index !== -1) {
+                                if (time < "07:00") {
+                                    index = index === 0 ? index = 6 : index -= 1;
+                                }
+                                jour = jour_semaine.nom_fr[index];
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!jour) return interaction.reply({ content: "Jour de diffusion non trouvé", ephemeral: true });
                 }
             }
 
@@ -54,6 +83,7 @@ module.exports = {
                     media: command === 'report' ? message.embeds[0].fields[0].value : undefined,
                     id: command === 'animes' ? id : undefined,
                     message_id: command === 'animes' ? message.id : undefined,
+                    day: command === "animes" ? jour : undefined,
                 }
 
                 writeFile(`data/${command}.json`, JSON.stringify(databases[command]), (err) => { if (err) { console.log(err) } });

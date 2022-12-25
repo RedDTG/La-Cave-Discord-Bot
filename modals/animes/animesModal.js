@@ -107,9 +107,9 @@ module.exports = {
                 }
             }
         }
-
+        
         if (!jour) return interaction.reply({ content: "Jour de diffusion non trouvé", ephemeral: true });
-
+        
         //horaire france (-8h)
         const [hours, minutes] = time.split(":");
         const realTimeHours = (parseInt(hours, 10) - 6 + 24) % 24;
@@ -144,14 +144,13 @@ module.exports = {
             if (jour.toLowerCase() === semaine.name.toLowerCase()){
                 embed_calendar.fields[index].value = embed_calendar.fields[index].value.replaceAll("`", ""); 
                 if (embed_calendar.fields[index].value === " "){
-                    embed_calendar.fields[index].value = "- "+titre_anime;
+                    embed_calendar.fields[index].value = "\n- "+titre_anime;
                 }else{
                     embed_calendar.fields[index].value += "\n- "+titre_anime;
                 }
                 embed_calendar.fields[index].value = "```"+embed_calendar.fields[index].value+"```";
             }
         })
-
         //notification
         writeFile("data/notifications.json", JSON.stringify(notif_), (err) => { if (err) { console.log(err) } });
 
