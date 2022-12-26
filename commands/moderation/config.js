@@ -100,19 +100,18 @@ module.exports = {
                     
                 }
                 
-            } else if (channelChoice && calendarChoice){
+            } else if (channelChoice){
 
-                let url = 'https://www.livechart.me/api/v1/charts/nearest';         
-                const response = await axios.get(url);
-                const nom_saison = response.data.title;
+                if (typeChoice === "animes" && channelChoice && calendarChoice){
+                    let url = 'https://www.livechart.me/api/v1/charts/nearest';         
+                    const response = await axios.get(url);
+                    const nom_saison = response.data.title;
 
-                embed_animes.setTitle('Anime - '+ nom_saison);
-                const calendar_msg = await client.channels.cache.get(calendarChoice.id).send({ embeds: [embed_animes] });
-                config["calendar"] = calendarChoice.id;
-                config["calendar_msg_id"] = calendar_msg.id;
+                    embed_animes.setTitle('Anime - '+ nom_saison);
+                    const calendar_msg = await client.channels.cache.get(calendarChoice.id).send({ embeds: [embed_animes] });
+                    config["calendar"] = calendarChoice.id;
+                    config["calendar_msg_id"] = calendar_msg.id;
 
-                config[typeChoice] = channelChoice.id;
-                if (typeChoice === "animes"){
                     const thread = await channelChoice.threads.create({
                         name: 'Gestion-Anime',
                         autoArchiveDuration: 10080,
@@ -120,10 +119,18 @@ module.exports = {
                         reason: 'Needed a separate thread for moderation',
                     });
                     await thread.members.add(interaction.user.id);
+
+                    config[typeChoice] = channelChoice.id;
+                    await interaction.reply({content: `Le channel <#${config[typeChoice]}> a été configuré pour la commande : **\`${typeChoice}\`**`,ephemeral: true});
+                
+                }else if (typeChoice !== "animes"){
+                    config[typeChoice] = channelChoice.id;
+                    await interaction.reply({content: `Le channel <#${config[typeChoice]}> a été configuré pour la commande : **\`${typeChoice}\`**`,ephemeral: true});
+                
+                }else{
+                    return interaction.reply({content: `Merci de faire un vrai choix :)`,ephemeral: true});
                 }
                 
-                
-                await interaction.reply({content: `Le channel <#${config[typeChoice]}> a été configuré pour la commande : **\`${typeChoice}\`**`,ephemeral: true});
 
             }else{
                 return interaction.reply({content: `Merci de faire un vrai choix :)`,ephemeral: true});
