@@ -131,7 +131,7 @@ module.exports = {
                     config[typeChoice] = channelChoice.id;
                     await interaction.reply({ content: `Le channel <#${config[typeChoice]}> a été configuré pour la commande : **\`${typeChoice}\`**`, ephemeral: true });
 
-                } else if (typeChoice !== "report") {
+                } else if (typeChoice === "report") {
                     config[typeChoice] = channelChoice.id;
                     await interaction.reply({ content: `Le channel <#${config[typeChoice]}> a été configuré pour la commande : **\`${typeChoice}\`**`, ephemeral: true });
 
