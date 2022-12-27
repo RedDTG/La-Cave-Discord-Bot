@@ -44,17 +44,23 @@ module.exports = {
 
         //Appel API pour données
         const url_name = `https://www.livechart.me/api/v1/anime?q=${titre}`;
-        const response_name = await axios.get(url_name);
+        const response_name = await axios.get(url_name, { 
+            headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+        });
         if (response_name.data.items.length === 0) return interaction.reply({ content: "Anime not found", ephemeral: true });
         
         const { native_title, romaji_title } = response_name.data.items[index];
         let title_ = encodeURIComponent(native_title.replace("-", " "));
         let url = `https://api.jikan.moe/v4/anime?order_by=popularity&sort=asc&type=tv&status=airing&q=${title_}`;
-        let response = await axios.get(url);
+        let response = await axios.get(url, { 
+            headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+        });
         if (typeof response.data.data[index] === "undefined") {
             title_ = encodeURIComponent(romaji_title);
             url = `https://api.jikan.moe/v4/anime?order_by=popularity&sort=asc&type=tv&status=airing&q=${title_}`;
-            response = await axios.get(url);
+            response = await axios.get(url, { 
+                headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+            });
         }
         if (response.data.data.length === 0) return interaction.reply({ content: "Anime not found", ephemeral: true });
         //Approved Anime
@@ -85,7 +91,9 @@ module.exports = {
         let URL_POSTER = webp.large_image_url;
         if (URL_POSTER === null) {
             title_ = encodeURIComponent(title_english);
-            const response = await axios.get(`https://www.livechart.me/api/v1/anime?q=${title_}`);
+            const response = await axios.get(`https://www.livechart.me/api/v1/anime?q=${title_}`, { 
+                headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+            });
             URL_POSTER = response.data.items[0].poster_image_large;
         }
 
@@ -162,7 +170,7 @@ module.exports = {
         const thread = channel.threads.cache.find(x => x.name === 'Gestion-animes');
         await thread.send({ embeds: [embed], components: buttonMod});
 
-        client.channels.cache.get(config["animes"]).send({ embeds: [embed], components: buttons});
+        await client.channels.cache.get(config["animes"]).send({ embeds: [embed], components: buttons});
         
         return interaction.reply({ content: 'Cet animé a été ajouté dans la liste', ephemeral: true });
 

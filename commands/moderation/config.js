@@ -106,7 +106,9 @@ module.exports = {
                 if ((typeChoice === "animes" && calendarChoice) || typeChoice === "suggest") {
                     if (typeChoice === "animes" && calendarChoice) {
                         let url = 'https://www.livechart.me/api/v1/charts/nearest';
-                        const response = await axios.get(url);
+                        const response = await axios.get(url, { 
+                            headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+                        });
                         const nom_saison = response.data.title;
 
                         embed_animes.setTitle('Anime - ' + nom_saison);
