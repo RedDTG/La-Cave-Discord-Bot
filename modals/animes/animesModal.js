@@ -159,7 +159,7 @@ module.exports = {
         
 
         const channel = client.channels.cache.get(config["animes"]);
-        const thread = channel.threads.cache.find(x => x.name === 'Gestion-Anime');
+        const thread = channel.threads.cache.find(x => x.name === 'Gestion-animes');
         await thread.send({ embeds: [embed], components: buttonMod});
 
         client.channels.cache.get(config["animes"]).send({ embeds: [embed], components: buttons});

@@ -25,7 +25,7 @@ module.exports = {
                 command = "report";
             } else if (config["animes"]) {
                 const channel = message.guild.channels.cache.get(config["animes"])
-                const thread = channel.threads.cache.find(x => x.name === 'Gestion-Anime');
+                const thread = channel.threads.cache.find(x => x.name === 'Gestion-animes');
 
                 if (thread.parentId === message.channelId || thread.id === message.channelId) {
                     command = "animes";
