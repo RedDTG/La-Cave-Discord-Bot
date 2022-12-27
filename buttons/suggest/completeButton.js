@@ -20,7 +20,8 @@ module.exports = {
             client.users.fetch(suggest_datas.author, false).then((user) => { user.send(`Votre demande '**${suggest_datas.title}**' a été ajoutée à LaCave !`) });
             delete databases.suggest[interaction.message.id];;
 
-            writeFile("data/suggest.json", JSON.stringify(databases.suggest), (err) => { if (err) { console.log(err) } });
+            const configData = JSON.stringify(databases.suggest);
+            writeFile("data/suggest.json", configData, (err) => { if (err) { console.log(err) } });
         }
 
         interaction.message.delete();

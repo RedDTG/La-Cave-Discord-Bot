@@ -27,8 +27,9 @@ module.exports = {
                 content = `Tu as ajouté **\`${value.title}\`** à ta liste de notification ! \n **\`/list\`** pour voir toutes tes notifications`
             }
         }
-
-        writeFile("data/notifications.json", JSON.stringify(databases.notifications), (err) => { if (err) { console.log(err) } });
+        
+        const configData =  JSON.stringify(databases.notifications);
+        writeFile("data/notifications.json", configData, (err) => { if (err) { console.log(err) } });
         return interaction.reply({ content: content, ephemeral: true })
     }
 };

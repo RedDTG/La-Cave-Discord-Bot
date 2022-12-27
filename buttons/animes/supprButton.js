@@ -40,10 +40,12 @@ module.exports = {
                 databases.notifications.splice(index, 1);
             }
             
-            writeFile("data/notifications.json", JSON.stringify(databases.notifications), (err) => { if (err) { console.log(err) } });
+            const configData = JSON.stringify(databases.notifications);
+            writeFile("data/notifications.json", configData, (err) => { if (err) { console.log(err) } });
 
             delete databases.animes[interaction.message.id];
-            writeFile("data/animes.json", JSON.stringify(databases.animes), (err) => { if (err) { console.log(err) } });
+            const configData_ = JSON.stringify(databases.animes);
+            writeFile("data/animes.json", configData_, (err) => { if (err) { console.log(err) } });
         }
 
        await interaction.message.delete();

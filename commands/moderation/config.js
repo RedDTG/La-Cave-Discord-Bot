@@ -93,8 +93,11 @@ module.exports = {
                             //delete databases.notifications[index];
                             databases.animes[interaction.guildId] = {};
                             databases.notifications = [];
-                            writeFile("data/notifications.json", JSON.stringify(databases.notifications), (err) => { if (err) { console.log(err) } });
-                            writeFile("data/animes.json", JSON.stringify(databases.animes[interaction.guildId]), (err) => { if (err) { console.log(err) } });
+
+                            const configDataNotif = JSON.stringify(databases.notifications)
+                            const configDataAnimes = JSON.stringify(databases.animes[interaction.guildId])
+                            writeFile("data/notifications.json", configDataNotif, (err) => { if (err) { console.log(err) } });
+                            writeFile("data/animes.json", configDataAnimes, (err) => { if (err) { console.log(err) } });
                         }
                     }
                     delete config[typeChoice];
@@ -140,7 +143,8 @@ module.exports = {
             } else {
                 return interaction.reply({ content: `Merci de faire un vrai choix :)`, ephemeral: true });
             }
-            writeFile("data/config.json", JSON.stringify(databases.config), (err) => {
+            const configData = JSON.stringify(databases.config)
+            writeFile("data/config.json", configData, (err) => {
                 if (err) {
                     console.log(err);
                 }

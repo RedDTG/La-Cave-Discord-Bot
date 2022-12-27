@@ -114,8 +114,8 @@ module.exports = {
                     message_id: command !== 'report' ? message.id : undefined,
                     day: command === "animes" ? jour : undefined,
                 }
-
-                writeFile(`data/${command}.json`, JSON.stringify(databases[command]), (err) => { if (err) { console.log(err) } });
+                const configData = JSON.stringify(databases[command]);
+                writeFile(`data/${command}.json`, configData, (err) => { if (err) { console.log(err) } });
             }
 
         }

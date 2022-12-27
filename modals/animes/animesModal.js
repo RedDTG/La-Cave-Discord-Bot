@@ -160,7 +160,8 @@ module.exports = {
             }
         })
         //notification
-        writeFile("data/notifications.json", JSON.stringify(notif_), (err) => { if (err) { console.log(err) } });
+        const configData = JSON.stringify(notif_)
+        writeFile("data/notifications.json", configData, (err) => { if (err) { console.log(err) } });
 
         //modification du message
         await  channel_calendar.messages.fetch(calendar_msg.id).then(msg => {msg.edit({ embeds: [embed_calendar]})});
