@@ -1,5 +1,6 @@
 const { PermissionsBitField } = require('discord.js');
 const databases = { animes: require("../../data/animes.json"), notifications: require("../../data/notifications.json"), config: require("../../data/config.json"), }
+const yarss = { yarss: require("../../data/yarss2/yarss2.json") }
 const { writeFile } = require('fs');
 
 
@@ -37,6 +38,38 @@ module.exports = {
 
             const index = databases.notifications.findIndex(obj => Object.keys(obj)[0] === databases.animes[interaction.message.id].id);
             if (index !== -1) {
+                const rssJson = yarss.yarss;
+
+                delete rssJson.rssfeeds[index];
+                delete rssJson.subscriptions[index];
+                let i = 0;
+                for (const key in rssJson.rssfeeds) {
+                    if (parseInt(i) !== parseInt(key)){
+                        rssJson.rssfeeds[i] = rssJson.rssfeeds[key];
+                        rssJson.rssfeeds[i].key = `${i}`;
+                        delete rssJson.rssfeeds[key];
+                    }  
+                    i++;
+                }
+
+                i = 0;
+                for (const key in rssJson.subscriptions) {
+                    if (parseInt(i) !== parseInt(key)){
+                        rssJson.subscriptions[i] = rssJson.subscriptions[key];
+                        rssJson.subscriptions[i].key = `${i}`;
+                        rssJson.subscriptions[i].rssfeed_key = `${i}`;
+                        delete rssJson.subscriptions[key];
+                    }
+                    i++;
+                }
+                const configDataRss = JSON.stringify(rssJson)
+                writeFile("data/yarss2/yarss2.json", configDataRss, (err) => { if (err) { console.log(err) } });
+
+                const conf = JSON.stringify(yarss.yarss);
+                const str_start = '{"file": 8,"format": 1}';
+                const str_FINAL = str_start + conf;
+                writeFile("data/yarss2/yarss2.conf", str_FINAL, (err) => { if (err) { console.log(err) } });
+
                 databases.notifications.splice(index, 1);
             }
             
