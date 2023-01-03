@@ -83,12 +83,12 @@ module.exports = {
             rssJson.rssfeeds[key] = new_anime_feed;
             rssJson.subscriptions[key] = new_anime_sub;
 
-            const configDataRss = JSON.stringify(rssJson)
+            const configDataRss = JSON.stringify(rssJson, null, 4)
             writeFile("data/yarss2/yarss2.json", configDataRss, (err) => { if (err) { console.log(err) } });
 
-            const conf = JSON.stringify(yarss.yarss);
-            const str_start = '{"file": 8,"format": 1}';
-            const str_FINAL = str_start + conf;
+            const conf = JSON.stringify(yarss.yarss, null, 4);
+            const str_start = JSON.stringify(JSON.parse('{"file": 8,"format": 1}'), null, 2);
+            const str_FINAL = str_start + conf
             writeFile("data/yarss2/yarss2.conf", str_FINAL, (err) => { if (err) { console.log(err) } });
 
         }
