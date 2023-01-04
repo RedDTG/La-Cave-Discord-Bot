@@ -15,114 +15,107 @@ const buttons = [
         )
 
 ]
-const buttonMod =[
+const buttonMod = [
     new ActionRowBuilder()
-    .addComponents(
-        new ButtonBuilder()
-            .setCustomId('animes-supprimer-button')
-            .setLabel('Supprimer cet anime')
-            .setStyle(ButtonStyle.Danger)
-    )
+        .addComponents(
+            new ButtonBuilder()
+                .setCustomId('animes-supprimer-button')
+                .setLabel('Supprimer cet anime')
+                .setStyle(ButtonStyle.Danger)
+        )
 ]
 
 module.exports = {
     name: 'animes-modal',
     async runInteraction(client, interaction) {
+        async function callAPI(titre) {
+            const query = `
+                    query GetAnime {
+                        results: Page(perPage: 1) {
+                        media(type: ANIME, search: "${titre}", status: RELEASING) {
+                            id
+                            idMal
+                            title {
+                            english
+                            }
+                            coverImage {
+                            extraLarge
+                            }
+                        }
+                        }
+                    }
+                `;
+
+            const responseJSON = await axios.post('https://graphql.anilist.co/', { query });
+
+            return responseJSON.data.data.results.media[0];
+        }
+
+        async function getDay(animeData){
+            //Jour de la semaine Anglais - Français
+            const jour_semaine = {
+                nom_fr: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
+                nom_en: ["Mondays", "Tuesdays", "Wednesdays", "Thursdays", "Fridays", "Saturdays", "Sundays"]
+            };
+
+            let time;
+            for (const data in animeData) {
+                if (data == "broadcast") {
+                    const day = animeData[data].day;
+                    time = animeData[data].time;
+                    let index = jour_semaine.nom_en.findIndex((en) => en === day);
+    
+                    if (index !== -1) {
+                        if (time < "07:00") {
+                            index = index === 0 ? index = 6 : index -= 1;
+                        }
+                        jour = jour_semaine.nom_fr[index];
+                        break;
+                    }
+                }
+            }
+    
+            if (!jour) return interaction.reply({ content: "Jour de diffusion non trouvé", ephemeral: true });
+    
+            //horaire france (-8h)
+            const [hours, minutes] = time.split(":");
+            const realTimeHours = (parseInt(hours, 10) - 6 + 24) % 24;
+            let realTimeMinutes = parseInt(minutes, 10);
+            if (realTimeMinutes === 0) { realTimeMinutes = "00"; }
+
+            const obj = {
+                jour: jour,
+                heure: `${realTimeHours}:${realTimeMinutes}`,
+            };
+            return obj;
+        }
+
         const config = databases.config[interaction.guildId];
         const notif_ = databases.notifications;
-        
-
-        //Jour de la semaine Anglais - Français
-        const jour_semaine = {
-            nom_fr: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
-            nom_en: ["Mondays", "Tuesdays", "Wednesdays", "Thursdays", "Fridays", "Saturdays", "Sundays"]
-        };
-        let index = 0;
 
         //Récupération Modal
         const titre = interaction.fields.getTextInputValue('animes-title');
 
-        //Appel API pour données
-        const url_name = `https://www.livechart.me/api/v1/anime?q=${titre}`;
-        const response_name = await axios.get(url_name, { 
-            headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-        });
-        if (response_name.data.items.length === 0) return interaction.reply({ content: "Anime not found", ephemeral: true });
-        
-        const { native_title, romaji_title } = response_name.data.items[index];
-        let title_ = encodeURIComponent(native_title.replace("-", " "));
-        let url = `https://api.jikan.moe/v4/anime?order_by=popularity&sort=asc&type=tv&status=airing&q=${title_}`;
-        let response = await axios.get(url, { 
-            headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-        });
-        if (typeof response.data.data[index] === "undefined") {
-            title_ = encodeURIComponent(romaji_title);
-            url = `https://api.jikan.moe/v4/anime?order_by=popularity&sort=asc&type=tv&status=airing&q=${title_}`;
-            response = await axios.get(url, { 
-                headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-            });
-        }
-        if (response.data.data.length === 0) return interaction.reply({ content: "Anime not found", ephemeral: true });
-        //Approved Anime
-        let approved = await response.data.data[index].approved;
-        if (!approved){
-            while (!approved){
-                approved = await response.data.data[index].approved;
-                index++;
-            }
-            index--;
-        }
-        
         //Récupération final anime
-        const animeData = await response.data.data[index];
-        if (!animeData) return interaction.reply({ content: "Anime not found", ephemeral: true });
+        const animeData = await callAPI(titre);
+        
+        if (!animeData || !animeData.idMal) return interaction.reply({ content: "Anime pas dans cette saison ou pas trouvé", ephemeral: true });
 
         //Récupération variable dans anime
-        const { title, images, mal_id } = animeData;
+        const { id: ani_id, idMal: mal_id, title: { english: title_english }, coverImage: { extraLarge: URL_POSTER } } = animeData;
+        
         const exists = notif_.some(obj => Object.keys(obj)[0] === String(mal_id));
         if (exists) {
             return interaction.reply({ content: `L'anime est un doublon !`, ephemeral: true });
         }
 
-        let {title_english} = animeData;
-        if (!title_english) {title_english = title;};
-        const { webp } = images;
-
-        let URL_POSTER = webp.large_image_url;
-        if (URL_POSTER === null) {
-            title_ = encodeURIComponent(title_english);
-            const response = await axios.get(`https://www.livechart.me/api/v1/anime?q=${title_}`, { 
-                headers: { "Accept-Encoding": "gzip,deflate,compress" } 
-            });
-            URL_POSTER = response.data.items[0].poster_image_large;
-        }
-
-        //Date de Japon  à france   
-        let jour;
-        let time;
-        for (const data in animeData) {
-            if (data == "broadcast") {
-                const day = animeData[data].day;
-                time = animeData[data].time;
-                let index = jour_semaine.nom_en.findIndex((en) => en === day);
-
-                if (index !== -1) {
-                    if (time < "07:00") {
-                        index = index === 0 ? index = 6 : index -= 1;
-                    }
-                    jour = jour_semaine.nom_fr[index];
-                    break;
-                }
-            }
-        }
-        
-        if (!jour) return interaction.reply({ content: "Jour de diffusion non trouvé", ephemeral: true });
-        
-        //horaire france (-8h)
-        const [hours, minutes] = time.split(":");
-        const realTimeHours = (parseInt(hours, 10) - 6 + 24) % 24;
-        let realTimeMinutes = parseInt(minutes, 10);
-        if (realTimeMinutes === 0) {realTimeMinutes = "00";}
+        const response = await axios.get(`https://api.jikan.moe/v4/anime/${mal_id}`, { 
+            headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+        });
+        const data_anime = await response.data.data;
+  
+        //Date de Japon à france   
+        const Horaires = await getDay(data_anime);
 
         //traduction nom anglais
         let titre_anime = title_english.replace("Season", "- Saison");
@@ -133,14 +126,14 @@ module.exports = {
             .setTitle(titre_anime)
             .setThumbnail(URL_POSTER)
             .addFields(
-                { name: `Jour`, value: jour, inline: true },
-                { name: `Heure`, value: `${realTimeHours}:${realTimeMinutes}`, inline: true },
+                { name: `Jour`, value: Horaires.jour, inline: true },
+                { name: `Heure`, value: Horaires.heure, inline: true },
             );
 
 
-        const newObject = { [mal_id]: []};
+        const newObject = { [mal_id]: [] };
         notif_.push(newObject);
-              
+
         const channel_calendar = await interaction.guild.channels.cache.get(config["calendar"]);
         const calendar_msg = await channel_calendar.messages.fetch(config["calendar_msg_id"]);
 
@@ -148,15 +141,15 @@ module.exports = {
         const embed_calendar = await calendar_msg.embeds[0];
 
         //modification de la ligne (avec détéction du jour)
-        embed_calendar.fields.forEach((semaine, index)=>{
-            if (jour.toLowerCase() === semaine.name.toLowerCase()){
-                embed_calendar.fields[index].value = embed_calendar.fields[index].value.replaceAll("`", ""); 
-                if (embed_calendar.fields[index].value === " "){
-                    embed_calendar.fields[index].value = "\n- "+titre_anime;
-                }else{
-                    embed_calendar.fields[index].value += "\n- "+titre_anime;
+        embed_calendar.fields.forEach((semaine, index) => {
+            if (jour.toLowerCase() === semaine.name.toLowerCase()) {
+                embed_calendar.fields[index].value = embed_calendar.fields[index].value.replaceAll("`", "");
+                if (embed_calendar.fields[index].value === " ") {
+                    embed_calendar.fields[index].value = "\n- " + titre_anime;
+                } else {
+                    embed_calendar.fields[index].value += "\n- " + titre_anime;
                 }
-                embed_calendar.fields[index].value = "```"+embed_calendar.fields[index].value+"```";
+                embed_calendar.fields[index].value = "```" + embed_calendar.fields[index].value + "```";
             }
         })
         //notification
@@ -164,15 +157,15 @@ module.exports = {
         writeFile("data/notifications.json", configData, (err) => { if (err) { console.log(err) } });
 
         //modification du message
-        await  channel_calendar.messages.fetch(calendar_msg.id).then(msg => {msg.edit({ embeds: [embed_calendar]})});
-        
+        await channel_calendar.messages.fetch(calendar_msg.id).then(msg => { msg.edit({ embeds: [embed_calendar] }) });
+
 
         const channel = client.channels.cache.get(config["animes"]);
         const thread = channel.threads.cache.find(x => x.name === 'Gestion-animes');
-        await thread.send({ embeds: [embed], components: buttonMod});
+        await thread.send({ embeds: [embed], components: buttonMod });
 
-        await client.channels.cache.get(config["animes"]).send({ embeds: [embed], components: buttons});
-        
+        await client.channels.cache.get(config["animes"]).send({ embeds: [embed], components: buttons });
+
         return interaction.reply({ content: 'Cet animé a été ajouté dans la liste', ephemeral: true });
 
     }
