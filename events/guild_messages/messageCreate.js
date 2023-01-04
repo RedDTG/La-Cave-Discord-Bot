@@ -43,17 +43,12 @@ module.exports = {
 
         function setYarss() {
             //Yarss2 config
-            const key = Object.keys(yarss.yarss.rssfeeds).length;
-            const new_anime_feed = JSON.parse('{"active": true,"key": "0","last_update": "2022-12-27T21:36:09+00:00","name": "One Piece","obey_ttl": true,"prefer_magnet": false,"site": "rss-tsundere.deta.dev","update_interval": 5,"update_on_startup": true,"url": "https://rss-tsundere.deta.dev/rss/nyaa","user_agent": ""}');
+            const key = Object.keys(yarss.yarss.subscriptions).length;
             const new_anime_sub = JSON.parse('{"active": true,"add_torrents_in_paused_state": "Default","auto_managed": "Default","custom_text_lines": "","download_location": "/ocean/animes/One Piece/S1/","email_notifications": {},"ignore_timestamp": false,"key": "0","label": "","last_match": "","max_connections": -2,"max_download_speed": -2,"max_upload_slots": -2,"max_upload_speed": -2,"move_completed": "/ocean/animes/One Piece/S1/","name": "One Piece","prioritize_first_last_pieces": "Default","regex_exclude": ".mp4","regex_exclude_ignorecase": true,"regex_include": "(?=.*One Piece)(?=.*1080)","regex_include_ignorecase": true,"rssfeed_key": "0","sequential_download": "Default"}');
 
             const id_last_anime = Object.keys(databases.notifications[key])[0];
             const last_anime = Object.values(databases.animes).find(o => o.id === id_last_anime);
             const date = new Date(Date.now()).toISOString().replace(/\.\d+/, "").replace(/Z$/, "+00:00");
-
-            new_anime_feed.key = String(`${key}`);
-            new_anime_feed.last_update = date;
-            new_anime_feed.name = last_anime.title;
 
             const str = last_anime.title.replace(/[\/#,+$~%"`:;*?<>{}|^@]+/, "");
             const word_part = str.split(" ");
@@ -70,8 +65,7 @@ module.exports = {
             const path = `/ocean/animes/${title_rss}/S${saison}`;
             const regex = last_anime.title.split(" ").slice(0, 2).join(" ");
 
-            new_anime_sub.key = String(`${key}`);;
-            new_anime_sub.rssfeed_key = String(`${key}`);;
+            new_anime_sub.key = String(`${key}`);
             new_anime_sub.name = last_anime.title;
             new_anime_sub.download_location = path;
             new_anime_sub.move_completed = path;
@@ -79,7 +73,6 @@ module.exports = {
 
             const rssJson = yarss.yarss;
 
-            rssJson.rssfeeds[key] = new_anime_feed;
             rssJson.subscriptions[key] = new_anime_sub;
 
             const configDataRss = JSON.stringify(rssJson, null, 4)

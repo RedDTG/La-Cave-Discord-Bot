@@ -29,97 +29,6 @@
             "update_on_startup": true,
             "url": "https://rss-tsundere.deta.dev/rss/nyaa",
             "user_agent": ""
-        },
-        "1": {
-            "active": true,
-            "key": "1",
-            "last_update": "2023-01-02T21:34:43+00:00",
-            "name": "My Hero Academia - Saison 6",
-            "obey_ttl": true,
-            "prefer_magnet": false,
-            "site": "rss-tsundere.deta.dev",
-            "update_interval": 5,
-            "update_on_startup": true,
-            "url": "https://rss-tsundere.deta.dev/rss/nyaa",
-            "user_agent": ""
-        },
-        "2": {
-            "active": true,
-            "key": "2",
-            "last_update": "2023-01-02T21:34:59+00:00",
-            "name": "To Your Eternity - Saison 2",
-            "obey_ttl": true,
-            "prefer_magnet": false,
-            "site": "rss-tsundere.deta.dev",
-            "update_interval": 5,
-            "update_on_startup": true,
-            "url": "https://rss-tsundere.deta.dev/rss/nyaa",
-            "user_agent": ""
-        },
-        "3": {
-            "active": true,
-            "key": "3",
-            "last_update": "2023-01-02T21:35:11+00:00",
-            "name": "Golden Kamuy - Saison 4",
-            "obey_ttl": true,
-            "prefer_magnet": false,
-            "site": "rss-tsundere.deta.dev",
-            "update_interval": 5,
-            "update_on_startup": true,
-            "url": "https://rss-tsundere.deta.dev/rss/nyaa",
-            "user_agent": ""
-        },
-        "4": {
-            "active": true,
-            "key": "4",
-            "last_update": "2023-01-02T21:35:33+00:00",
-            "name": "Blue Lock",
-            "obey_ttl": true,
-            "prefer_magnet": false,
-            "site": "rss-tsundere.deta.dev",
-            "update_interval": 5,
-            "update_on_startup": true,
-            "url": "https://rss-tsundere.deta.dev/rss/nyaa",
-            "user_agent": ""
-        },
-        "5": {
-            "active": true,
-            "key": "5",
-            "last_update": "2023-01-03T18:02:55+00:00",
-            "name": "Urusei Yatsura",
-            "obey_ttl": true,
-            "prefer_magnet": false,
-            "site": "rss-tsundere.deta.dev",
-            "update_interval": 5,
-            "update_on_startup": true,
-            "url": "https://rss-tsundere.deta.dev/rss/nyaa",
-            "user_agent": ""
-        },
-        "6": {
-            "active": true,
-            "key": "6",
-            "last_update": "2023-01-03T18:03:20+00:00",
-            "name": "Play It Cool, Guys",
-            "obey_ttl": true,
-            "prefer_magnet": false,
-            "site": "rss-tsundere.deta.dev",
-            "update_interval": 5,
-            "update_on_startup": true,
-            "url": "https://rss-tsundere.deta.dev/rss/nyaa",
-            "user_agent": ""
-        },
-        "7": {
-            "active": true,
-            "key": "7",
-            "last_update": "2023-01-04T19:14:41+00:00",
-            "name": "Bungo Stray Dogs - Saison 4",
-            "obey_ttl": true,
-            "prefer_magnet": false,
-            "site": "rss-tsundere.deta.dev",
-            "update_interval": 5,
-            "update_on_startup": true,
-            "url": "https://rss-tsundere.deta.dev/rss/nyaa",
-            "user_agent": ""
         }
     },
     "subscriptions": {
@@ -170,7 +79,7 @@
             "regex_exclude_ignorecase": true,
             "regex_include": "(?=.*My Hero)(?=.*1080)",
             "regex_include_ignorecase": true,
-            "rssfeed_key": "1",
+            "rssfeed_key": "0",
             "sequential_download": "Default"
         },
         "2": {
@@ -195,7 +104,7 @@
             "regex_exclude_ignorecase": true,
             "regex_include": "(?=.*To Your)(?=.*1080)",
             "regex_include_ignorecase": true,
-            "rssfeed_key": "2",
+            "rssfeed_key": "0",
             "sequential_download": "Default"
         },
         "3": {
@@ -220,7 +129,7 @@
             "regex_exclude_ignorecase": true,
             "regex_include": "(?=.*Golden Kamuy)(?=.*1080)",
             "regex_include_ignorecase": true,
-            "rssfeed_key": "3",
+            "rssfeed_key": "0",
             "sequential_download": "Default"
         },
         "4": {
@@ -245,7 +154,7 @@
             "regex_exclude_ignorecase": true,
             "regex_include": "(?=.*Blue Lock)(?=.*1080)",
             "regex_include_ignorecase": true,
-            "rssfeed_key": "4",
+            "rssfeed_key": "0",
             "sequential_download": "Default"
         },
         "5": {
@@ -270,7 +179,7 @@
             "regex_exclude_ignorecase": true,
             "regex_include": "(?=.*Urusei Yatsura)(?=.*1080)",
             "regex_include_ignorecase": true,
-            "rssfeed_key": "5",
+            "rssfeed_key": "0",
             "sequential_download": "Default"
         },
         "6": {
@@ -295,7 +204,7 @@
             "regex_exclude_ignorecase": true,
             "regex_include": "(?=.*Play It)(?=.*1080)",
             "regex_include_ignorecase": true,
-            "rssfeed_key": "6",
+            "rssfeed_key": "0",
             "sequential_download": "Default"
         },
         "7": {
@@ -320,7 +229,7 @@
             "regex_exclude_ignorecase": true,
             "regex_include": "(?=.*Bungo Stray)(?=.*1080)",
             "regex_include_ignorecase": true,
-            "rssfeed_key": "7",
+            "rssfeed_key": "0",
             "sequential_download": "Default"
         }
     }

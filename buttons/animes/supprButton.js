@@ -40,24 +40,12 @@ module.exports = {
             if (index !== -1) {
                 const rssJson = yarss.yarss;
 
-                delete rssJson.rssfeeds[index];
                 delete rssJson.subscriptions[index];
                 let i = 0;
-                for (const key in rssJson.rssfeeds) {
-                    if (parseInt(i) !== parseInt(key)){
-                        rssJson.rssfeeds[i] = rssJson.rssfeeds[key];
-                        rssJson.rssfeeds[i].key = `${i}`;
-                        delete rssJson.rssfeeds[key];
-                    }  
-                    i++;
-                }
-
-                i = 0;
                 for (const key in rssJson.subscriptions) {
                     if (parseInt(i) !== parseInt(key)){
                         rssJson.subscriptions[i] = rssJson.subscriptions[key];
                         rssJson.subscriptions[i].key = `${i}`;
-                        rssJson.subscriptions[i].rssfeed_key = `${i}`;
                         delete rssJson.subscriptions[key];
                     }
                     i++;
