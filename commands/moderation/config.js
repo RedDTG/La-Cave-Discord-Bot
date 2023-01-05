@@ -108,7 +108,7 @@ module.exports = {
 
                 if ((typeChoice === "animes" && calendarChoice) || typeChoice === "suggest") {
                     if (typeChoice === "animes" && calendarChoice) {
-                        let url = 'https://www.livechart.me/api/v1/charts/nearest';
+                        const url = 'https://www.livechart.me/api/v1/charts/nearest';
                         const response = await axios.get(url, { 
                             headers: { "Accept-Encoding": "gzip,deflate,compress" } 
                         });

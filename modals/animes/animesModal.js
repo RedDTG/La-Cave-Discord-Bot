@@ -37,6 +37,7 @@ module.exports = {
                             idMal
                             title {
                             english
+                            romaji
                             }
                             coverImage {
                             extraLarge
@@ -49,6 +50,15 @@ module.exports = {
             const responseJSON = await axios.post('https://graphql.anilist.co/', { query });
 
             return responseJSON.data.data.results.media[0];
+        }
+
+        async function getSeason(){
+            const url = 'https://www.livechart.me/api/v1/charts/nearest';
+            const response = await axios.get(url, { 
+                headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+            });
+            const nom_saison = response.data.title;
+            return nom_saison;
         }
 
         async function getDay(animeData){
@@ -102,8 +112,14 @@ module.exports = {
         if (!animeData || !animeData.idMal) return interaction.reply({ content: "Anime pas dans cette saison ou pas trouvé", ephemeral: true });
 
         //Récupération variable dans anime
-        const { id: ani_id, idMal: mal_id, title: { english: title_english }, coverImage: { extraLarge: URL_POSTER } } = animeData;
-        
+        const { id: ani_id, idMal: mal_id, title: { english: title_english, romaji: title_romaji }, coverImage: { extraLarge: URL_POSTER } } = animeData;
+        let title;
+        if (title_english){
+            title = title_english;
+        }else{
+            title = title_romaji;
+        }
+
         const exists = notif_.some(obj => Object.keys(obj)[0] === String(mal_id));
         if (exists) {
             return interaction.reply({ content: `L'anime est un doublon !`, ephemeral: true });
@@ -118,7 +134,7 @@ module.exports = {
         const Horaires = await getDay(data_anime);
 
         //traduction nom anglais
-        let titre_anime = title_english.replace("Season", "- Saison");
+        let titre_anime = title.replace("Season", "- Saison");
         titre_anime = titre_anime.replace("Part", "- Partie");
 
         //Création du message de sortie
@@ -140,6 +156,14 @@ module.exports = {
         //récupération du message actuel
         const embed_calendar = await calendar_msg.embeds[0];
 
+        //Changement Saison - Titre
+        const nom_saison = await getSeason();
+
+        let current_season = embed_calendar.title;
+        current_season = current_season.split(" - ")[1];
+        if (nom_saison !== current_season){
+            embed_calendar.setTitle('Anime - ' + nom_saison);
+        }
         //modification de la ligne (avec détéction du jour)
         embed_calendar.fields.forEach((semaine, index) => {
             if (jour.toLowerCase() === semaine.name.toLowerCase()) {
@@ -159,12 +183,15 @@ module.exports = {
         //modification du message
         await channel_calendar.messages.fetch(calendar_msg.id).then(msg => { msg.edit({ embeds: [embed_calendar] }) });
 
-
         const channel = client.channels.cache.get(config["animes"]);
         const thread = channel.threads.cache.find(x => x.name === 'Gestion-animes');
-        await thread.send({ embeds: [embed], components: buttonMod });
+        await thread.send({ embeds: [embed], components: buttonMod }).then(()=>
+            setTimeout(()=> {
+                client.channels.cache.get(config["animes"]).send({ embeds: [embed], components: buttons });
+            }, 1000)            
+        );
 
-        await client.channels.cache.get(config["animes"]).send({ embeds: [embed], components: buttons });
+       
 
         return interaction.reply({ content: 'Cet animé a été ajouté dans la liste', ephemeral: true });
 
