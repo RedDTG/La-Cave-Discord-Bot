@@ -1,5 +1,6 @@
 const { PermissionsBitField, ChannelType, EmbedBuilder } = require('discord.js');
 const databases = { config: require("../../data/config.json"), notifications: require("../../data/notifications.json"), animes: require("../../data/animes.json") }
+const yarss = { yarss: require("../../data/yarss2/yarss2.json")}
 const { writeFile } = require('fs');
 const axios = require('axios');
 
@@ -91,13 +92,18 @@ module.exports = {
                             delete config["calendar"];
                             delete config["calendar_msg_id"];
                             //delete databases.notifications[index];
-                            databases.animes[interaction.guildId] = {};
-                            databases.notifications = [];
+                            databases.animes = {};
+                            databases.notifications.length = 0;
 
                             const configDataNotif = JSON.stringify(databases.notifications)
-                            const configDataAnimes = JSON.stringify(databases.animes[interaction.guildId])
+                            const configDataAnimes = JSON.stringify(databases.animes)
+                            
+                            yarss.yarss.subscriptions = {};
+                            const configDataRss = JSON.stringify(yarss.yarss, null, 4)
+                            
                             writeFile("data/notifications.json", configDataNotif, (err) => { if (err) { console.log(err) } });
                             writeFile("data/animes.json", configDataAnimes, (err) => { if (err) { console.log(err) } });
+                            writeFile("data/yarss2/yarss2.json", configDataRss, (err) => { if (err) { console.log(err) } });
                         }
                     }
                     delete config[typeChoice];

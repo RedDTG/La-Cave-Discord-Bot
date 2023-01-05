@@ -45,11 +45,10 @@ module.exports = {
             //Yarss2 config
             const key = Object.keys(yarss.yarss.subscriptions).length;
             const new_anime_sub = JSON.parse('{"active": true,"add_torrents_in_paused_state": "Default","auto_managed": "Default","custom_text_lines": "","download_location": "/ocean/animes/One Piece/S1/","email_notifications": {},"ignore_timestamp": false,"key": "0","label": "","last_match": "","max_connections": -2,"max_download_speed": -2,"max_upload_slots": -2,"max_upload_speed": -2,"move_completed": "/ocean/animes/One Piece/S1/","name": "One Piece","prioritize_first_last_pieces": "Default","regex_exclude": ".mp4","regex_exclude_ignorecase": true,"regex_include": "(?=.*One Piece)(?=.*1080)","regex_include_ignorecase": true,"rssfeed_key": "0","sequential_download": "Default"}');
-
             const id_last_anime = Object.keys(databases.notifications[key])[0];
             const last_anime = Object.values(databases.animes).find(o => o.id === id_last_anime);
-            const date = new Date(Date.now()).toISOString().replace(/\.\d+/, "").replace(/Z$/, "+00:00");
-
+            //const date = new Date(Date.now()).toISOString().replace(/\.\d+/, "").replace(/Z$/, "+00:00");
+            
             const str = last_anime.title.replace(/[\/#,+$~%"`:;*?<>{}|^@]+/, "");
             const word_part = str.split(" ");
             const index_rss = word_part.findIndex(word_part => word_part === "Saison");
@@ -141,6 +140,7 @@ module.exports = {
                 if (compare) {
                     message_value = message.id;
                 } else {
+                    
                     const value = Object.values(databases[command]).find(o => o.id === id);
                     const index = Object.values(databases[command]).indexOf(value);
                     const key = Object.keys(databases[command])[index];
@@ -159,7 +159,6 @@ module.exports = {
                 }
                 const configData = JSON.stringify(databases[command]);
                 writeFile(`data/${command}.json`, configData, (err) => { if (err) { console.log(err) } });
-                
                 if (command === "animes" && compare){
                     setYarss();
                 }

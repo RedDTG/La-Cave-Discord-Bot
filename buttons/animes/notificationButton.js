@@ -21,10 +21,10 @@ module.exports = {
 
             if (exists) {
                 obj[String(value.id)].splice(obj[value.id].indexOf(interaction.user.id), 1);
-                content = `Tu as enlevé **\`${value.title}\`** de ta liste de notification ! \n **\`/list\`** pour voir toutes tes notifications`
+                content = `[ :x: ] Tu as enlevé **\`${value.title}\`** de ta liste de notification ! \n **\`/list\`** pour voir toutes tes notifications`
             } else {
                 obj[String(value.id)].push(interaction.user.id);
-                content = `Tu as ajouté **\`${value.title}\`** à ta liste de notification ! \n **\`/list\`** pour voir toutes tes notifications`
+                content = `[ :white_check_mark: ] Tu as ajouté **\`${value.title}\`** à ta liste de notification ! \n **\`/list\`** pour voir toutes tes notifications`
             }
         }
         
