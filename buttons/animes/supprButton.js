@@ -19,22 +19,25 @@ module.exports = {
             const calendar_msg = await channel_calendar.messages.fetch(config["calendar_msg_id"]);
             const embed_calendar = await calendar_msg.embeds[0];
 
-            embed_calendar.fields.forEach((semaine, index)=>{
-                if (data_suppr.day.toLowerCase() === semaine.name.toLowerCase()){
+            embed_calendar.fields.forEach((semaine, index) => {
+                if (data_suppr.day.toLowerCase() === semaine.name.toLowerCase()) {
                     embed_calendar.fields[index].value = embed_calendar.fields[index].value.replaceAll('`', "");
-                    embed_calendar.fields[index].value = embed_calendar.fields[index].value.replaceAll(`\n- ${data_suppr.title}`, ""); 
-                    if (embed_calendar.fields[index].value){
-                        embed_calendar.fields[index].value = "```"+embed_calendar.fields[index].value+"```";
-                    }else{
-                        embed_calendar.fields[index].value = "```"+embed_calendar.fields[index].value+" ```";
+                    embed_calendar.fields[index].value = embed_calendar.fields[index].value.replaceAll(`\n- ${data_suppr.title}`, "");
+                    if (embed_calendar.fields[index].value) {
+                        embed_calendar.fields[index].value = "```" + embed_calendar.fields[index].value + "```";
+                    } else {
+                        embed_calendar.fields[index].value = "```" + embed_calendar.fields[index].value + " ```";
                     }
                 }
             })
-            await  channel_calendar.messages.fetch(calendar_msg.id).then(msg => {msg.edit({ embeds: [embed_calendar]})});
-            
-            client.channels.fetch(config["animes"]).then(channel => {
+            await channel_calendar.messages.fetch(calendar_msg.id).then(msg => { msg.edit({ embeds: [embed_calendar] }) });
+
+            await client.channels.fetch(config["animes"]).then(channel => {
                 channel.messages.delete(id);
-            });
+            }).then(() =>
+            setTimeout(() => {
+                interaction.message.delete()
+            }, 1000));
 
             const index = databases.notifications.findIndex(obj => Object.keys(obj)[0] === databases.animes[interaction.message.id].id);
             if (index !== -1) {
@@ -43,7 +46,7 @@ module.exports = {
                 delete rssJson.subscriptions[index];
                 let i = 0;
                 for (const key in rssJson.subscriptions) {
-                    if (parseInt(i) !== parseInt(key)){
+                    if (parseInt(i) !== parseInt(key)) {
                         rssJson.subscriptions[i] = rssJson.subscriptions[key];
                         rssJson.subscriptions[i].key = `${i}`;
                         delete rssJson.subscriptions[key];
@@ -60,7 +63,7 @@ module.exports = {
 
                 databases.notifications.splice(index, 1);
             }
-            
+
             const configData = JSON.stringify(databases.notifications);
             writeFile("data/notifications.json", configData, (err) => { if (err) { console.log(err) } });
 
@@ -68,10 +71,6 @@ module.exports = {
             const configData_ = JSON.stringify(databases.animes);
             writeFile("data/animes.json", configData_, (err) => { if (err) { console.log(err) } });
         }
-
-       await interaction.message.delete();
-
-        
 
         return interaction.reply({ content: 'Anime supprimé !', ephemeral: true })
     }

@@ -41,20 +41,22 @@ module.exports = {
             return jour_;
         }
 
+
         function setYarss() {
             //Yarss2 config
             const key = Object.keys(yarss.yarss.subscriptions).length;
             const new_anime_sub = JSON.parse('{"active": true,"add_torrents_in_paused_state": "Default","auto_managed": "Default","custom_text_lines": "","download_location": "/ocean/animes/One Piece/S1/","email_notifications": {},"ignore_timestamp": false,"key": "0","label": "","last_match": "","max_connections": -2,"max_download_speed": -2,"max_upload_slots": -2,"max_upload_speed": -2,"move_completed": "/ocean/animes/One Piece/S1/","name": "One Piece","prioritize_first_last_pieces": "Default","regex_exclude": ".mp4","regex_exclude_ignorecase": true,"regex_include": "(?=.*One Piece)(?=.*1080)","regex_include_ignorecase": true,"rssfeed_key": "0","sequential_download": "Default"}');
             const id_last_anime = Object.keys(databases.notifications[key])[0];
             const last_anime = Object.values(databases.animes).find(o => o.id === id_last_anime);
-            //const date = new Date(Date.now()).toISOString().replace(/\.\d+/, "").replace(/Z$/, "+00:00");
-            
-            const str = last_anime.title.replace(/[\/#,+$~%"`:;*?<>{}|^@]+/, "");
-            const word_part = str.split(" ");
+            const date = new Date(new Date(Date.now()).setDate(new Date(Date.now()).getDate() - 1)).toISOString().replace(/\.\d+/, "").replace(/Z$/, "+00:00");
+
+            const replaced_title = last_anime.title.replace(/[\/#+$~%"`:;*<>{}|^@!,? ]+/, " ").replace("  ", " ");
+
+            const word_part = replaced_title.split(" ");
             const index_rss = word_part.findIndex(word_part => word_part === "Saison");
             let title_rss;
             if (index_rss === -1) {
-                title_rss = str;
+                title_rss = replaced_title;
                 saison = 1;
             } else {
                 saison = +word_part[index_rss + 1];
@@ -62,10 +64,10 @@ module.exports = {
             }
 
             const path = `/ocean/animes/${title_rss}/S${saison}`;
-            const regex = last_anime.title.split(" ").slice(0, 2).join(" ");
-
+            const regex = title_rss.split(" ").slice(0, 2).join(" ");
             new_anime_sub.key = String(`${key}`);
-            new_anime_sub.name = last_anime.title;
+            new_anime_sub.last_match = String(`${date}`);
+            new_anime_sub.name = replaced_title;
             new_anime_sub.download_location = path;
             new_anime_sub.move_completed = path;
             new_anime_sub.regex_include = `(?=.*${regex})(?=.*1080)`;
@@ -140,7 +142,7 @@ module.exports = {
                 if (compare) {
                     message_value = message.id;
                 } else {
-                    
+
                     const value = Object.values(databases[command]).find(o => o.id === id);
                     const index = Object.values(databases[command]).indexOf(value);
                     const key = Object.keys(databases[command])[index];
@@ -159,7 +161,7 @@ module.exports = {
                 }
                 const configData = JSON.stringify(databases[command]);
                 writeFile(`data/${command}.json`, configData, (err) => { if (err) { console.log(err) } });
-                if (command === "animes" && compare){
+                if (command === "animes" && compare) {
                     setYarss();
                 }
             }
@@ -169,6 +171,7 @@ module.exports = {
         if (!message.author.bot && message.content.startsWith("+suggest")) {
             return message.reply({ content: `La commande +suggest n'existe plus ! Veuillez utiliser **\`/suggest\`** à la place !` });
         }
+
 
         // if (message.author.bot) return;
         // if (!message.content.startsWith(prefix)) return;

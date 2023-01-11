@@ -30,7 +30,7 @@ module.exports = {
         } else if (!databases.config[interaction.guildId].hasOwnProperty('animes')){
             return interaction.reply({ content: `Le channel pour la commande : **\`/add-anime\`**, n'est pas configuré`, ephemeral: true });
         }else{
-            await interaction.showModal(animesModal);
+            return interaction.showModal(animesModal);
         }
 
         
