@@ -36,35 +36,21 @@ module.exports = {
                 }
             }
 
-            if (!jour_) return interaction.reply({ content: "Jour de diffusion non trouvé", ephemeral: true });
+            if (!jour_) return undefined;
 
             return jour_;
         }
 
-
-        function setYarss() {
+        function setYarss(path_title, path_season) {
             //Yarss2 config
             const key = Object.keys(yarss.yarss.subscriptions).length;
             const new_anime_sub = JSON.parse('{"active": true,"add_torrents_in_paused_state": "Default","auto_managed": "Default","custom_text_lines": "","download_location": "/ocean/animes/One Piece/S1/","email_notifications": {},"ignore_timestamp": false,"key": "0","label": "","last_match": "","max_connections": -2,"max_download_speed": -2,"max_upload_slots": -2,"max_upload_speed": -2,"move_completed": "/ocean/animes/One Piece/S1/","name": "One Piece","prioritize_first_last_pieces": "Default","regex_exclude": ".mp4","regex_exclude_ignorecase": true,"regex_include": "(?=.*One Piece)(?=.*1080)","regex_include_ignorecase": true,"rssfeed_key": "0","sequential_download": "Default"}');
-            const id_last_anime = Object.keys(databases.notifications[key])[0];
-            const last_anime = Object.values(databases.animes).find(o => o.id === id_last_anime);
             const date = new Date(new Date(Date.now()).setDate(new Date(Date.now()).getDate() - 1)).toISOString().replace(/\.\d+/, "").replace(/Z$/, "+00:00");
 
-            const replaced_title = last_anime.title.replace(/[\/#+$~%"`:;*<>{}|^@!,? ]+/, " ").replace("  ", " ");
+            const replaced_title = path_title.replace(/[\/#+$~%"`:;*<>{}|^@!,? ]+/, " ").replace("  ", " ").trim();
 
-            const word_part = replaced_title.split(" ");
-            const index_rss = word_part.findIndex(word_part => word_part === "Saison");
-            let title_rss;
-            if (index_rss === -1) {
-                title_rss = replaced_title;
-                saison = 1;
-            } else {
-                saison = +word_part[index_rss + 1];
-                title_rss = word_part.slice(0, index_rss).join(" ").replace(/ -\s*$/, "");;
-            }
-
-            const path = `/ocean/animes/${title_rss}/S${saison}`;
-            const regex = title_rss.split(" ").slice(0, 2).join(" ");
+            const path = `/ocean/animes/${replaced_title}/S${path_season}`;
+            const regex = replaced_title.split(" ").slice(0, 2).join(" ");
             new_anime_sub.key = String(`${key}`);
             new_anime_sub.last_match = String(`${date}`);
             new_anime_sub.name = replaced_title;
@@ -95,6 +81,8 @@ module.exports = {
             let message_value;
             let command = false;
             let jour;
+            let path_title;
+            let path_season;
 
             if (message.channelId === config["report"]) {
                 command = "report";
@@ -118,13 +106,9 @@ module.exports = {
                                 id = Object.keys(dernier_objet)[Object.keys(dernier_objet).length - 1];
                                 jour = await getJour(id);
                             }
-
                         }
-
                     }
-
                 }
-
             }
 
             if (command) {
@@ -134,6 +118,23 @@ module.exports = {
                     compare = (message.channelId !== channelId)
                     if (command === "suggest") {
                         id = channelId;
+                    } else if (command === "animes") {
+                        //récupération du message actuel
+                        const embed_animes = await message.embeds[0];
+
+                        path_title = embed_animes.fields.filter(item => item.name === 'path_title').map(item => item.value)[0];
+                        path_season = embed_animes.fields.filter(item => item.name === 'path_season').map(item => item.value)[0];
+
+                        let index = await embed_animes.fields.findIndex(({ name }) => name === 'path_title');
+                        if (index !== -1) embed_animes.fields.splice(index, 1);
+
+                        index = await embed_animes.fields.findIndex(({ name }) => name === 'path_season');
+                        if (index !== -1) embed_animes.fields.splice(index, 1);
+
+                        setTimeout(() => {
+                            message.edit({ embeds: [embed_animes] });
+                        }, 2000)
+
                     }
                 }
                 else {
@@ -162,7 +163,7 @@ module.exports = {
                 const configData = JSON.stringify(databases[command]);
                 writeFile(`data/${command}.json`, configData, (err) => { if (err) { console.log(err) } });
                 if (command === "animes" && compare) {
-                    setYarss();
+                    setYarss(path_title, path_season);
                 }
             }
 
