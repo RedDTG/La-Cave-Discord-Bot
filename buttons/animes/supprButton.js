@@ -21,12 +21,16 @@ module.exports = {
 
             embed_calendar.fields.forEach((semaine, index) => {
                 if (data_suppr.day.toLowerCase() === semaine.name.toLowerCase()) {
-                    embed_calendar.fields[index].value = embed_calendar.fields[index].value.replaceAll('`', "");
-                    embed_calendar.fields[index].value = embed_calendar.fields[index].value.replaceAll(`\n- ${data_suppr.title}`, "");
-                    if (embed_calendar.fields[index].value) {
-                        embed_calendar.fields[index].value = "```" + embed_calendar.fields[index].value + "```";
+                    const lignes = embed_calendar.fields[index].value.split('\n');
+                    const lignesFiltrees = lignes.filter(ligne => !ligne.includes(data_suppr.title)).filter((ligne) => {return ligne !== '';});
+                    const nouveauTexte = lignesFiltrees.join('\n');
+                    embed_calendar.fields[index].value = nouveauTexte;
+                    
+                    if (embed_calendar.fields[index].value !== "```ini\n```") {
+
+                        embed_calendar.fields[index].value = embed_calendar.fields[index].value;
                     } else {
-                        embed_calendar.fields[index].value = "```" + embed_calendar.fields[index].value + " ```";
+                        embed_calendar.fields[index].value = "``` ```";
                     }
                 }
             })

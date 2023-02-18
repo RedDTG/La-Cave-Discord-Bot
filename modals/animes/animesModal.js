@@ -172,7 +172,7 @@ module.exports = {
 
             const obj = {
                 jour: jour,
-                heure: `${realTimeHours}:${realTimeMinutes}`,
+                heure: `${realTimeHours}h${realTimeMinutes}`,
             };
             return obj;
         }
@@ -257,10 +257,19 @@ module.exports = {
                 { name: `path_title`, value: `${tmp_title}`, inline: false },
             );
 
+        let season;
+        if (saison){
+            season = saison;
+        }
         if (saison > 1) {
             embed.addFields({ name: `path_season`, value: `${saison}`, inline: false });
-            saison = `Saison ${saison}`;
-            if (part) saison = `${saison} Partie ${part}`;
+            
+            if (!part){
+                saison = `Saison ${saison}`;
+            } else{
+                saison = `Saison ${saison} - Partie ${part}`;
+            }
+
             embed.addFields({ name: `\n`, value: `${saison}`, inline: false })
             embed.setTitle(tmp_title);
             final_title = tmp_title;
@@ -296,13 +305,16 @@ module.exports = {
         if (Horaires.jour !== "TBA") {
             embed_calendar.fields.forEach((semaine, index) => {
                 if (Horaires.jour.toLowerCase() === semaine.name.toLowerCase()) {
-                    embed_calendar.fields[index].value = embed_calendar.fields[index].value.replaceAll("`", "");
+                    embed_calendar.fields[index].value = embed_calendar.fields[index].value.replace("```", "").replace("ini", "").replace("\n```", "").replace("```", "");
+                    let calendar_title;
+                    season > 1 ? calendar_title = `[${Horaires.heure}] ${final_title} [${saison}]`: calendar_title = `[${Horaires.heure}] ${final_title}`
+                    
                     if (embed_calendar.fields[index].value === " ") {
-                        embed_calendar.fields[index].value = "\n- " + final_title;
+                        embed_calendar.fields[index].value = "\n- " + calendar_title;
                     } else {
-                        embed_calendar.fields[index].value += "\n- " + final_title;
+                        embed_calendar.fields[index].value += "\n- " + calendar_title;
                     }
-                    embed_calendar.fields[index].value = "```" + embed_calendar.fields[index].value + "```";
+                    embed_calendar.fields[index].value = "```ini" + embed_calendar.fields[index].value + "\n```";
                 }
             })
             //notification
