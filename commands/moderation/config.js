@@ -91,7 +91,7 @@ module.exports = {
 
                             delete config["calendar"];
                             delete config["calendar_msg_id"];
-                            //delete databases.notifications[index];
+                            
                             databases.animes = {};
                             databases.notifications.length = 0;
 

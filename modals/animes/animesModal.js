@@ -239,11 +239,6 @@ module.exports = {
             }
         }
 
-
-        // console.log(`Titre path : ${tmp_title}`);
-        // console.log(`Titre Affichage : ${final_title}`);
-        // console.log(`Prequel ? ${hasPrequel}, Saison ${saison}, Part ${part}`)
-
         //Date de Japon à france   
         const response = await axios.get(`https://api.jikan.moe/v4/anime/${mal_id}`, {
             headers: { "Accept-Encoding": "gzip,deflate,compress" }
