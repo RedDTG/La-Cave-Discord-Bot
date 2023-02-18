@@ -44,7 +44,7 @@ module.exports = {
         function setYarss(path_title, path_season) {
             //Yarss2 config
             const key = Object.keys(yarss.yarss.subscriptions).length;
-            const new_anime_sub = JSON.parse('{"active": true,"add_torrents_in_paused_state": "Default","auto_managed": "Default","custom_text_lines": "","download_location": "/ocean/animes/One Piece/S1/","email_notifications": {},"ignore_timestamp": false,"key": "0","label": "","last_match": "","max_connections": -2,"max_download_speed": -2,"max_upload_slots": -2,"max_upload_speed": -2,"move_completed": "/ocean/animes/One Piece/S1/","name": "One Piece","prioritize_first_last_pieces": "Default","regex_exclude": ".mp4","regex_exclude_ignorecase": true,"regex_include": "(?=.*One Piece)(?=.*1080)","regex_include_ignorecase": true,"rssfeed_key": "0","sequential_download": "Default"}');
+            const new_anime_sub = JSON.parse('{"active": true,"add_torrents_in_paused_state": "Default","auto_managed": "Default","custom_text_lines": "","download_location": "/ocean/animes/One Piece/S1/","email_notifications": {},"ignore_timestamp": false,"key": "0","label": "","last_match": "","max_connections": -2,"max_download_speed": -2,"max_upload_slots": -2,"max_upload_speed": -2,"move_completed": "/ocean/animes/One Piece/S1/","name": "One Piece","prioritize_first_last_pieces": "Default","regex_exclude": ".(?i) FRENCH | MULTI |.mp4","regex_exclude_ignorecase": true,"regex_include": "(?i)One Piece.*1080p","regex_include_ignorecase": true,"rssfeed_key": "0","sequential_download": "Default"}');
             const date = new Date(new Date(Date.now()).setDate(new Date(Date.now()).getDate() - 1)).toISOString().replace(/\.\d+/, "").replace(/Z$/, "+00:00");
 
             const replaced_title = path_title.replace(/[\/#+$~%"`:;*<>{}|^@!,? ]+/, " ").replace("  ", " ").trim();
@@ -56,7 +56,7 @@ module.exports = {
             new_anime_sub.name = replaced_title;
             new_anime_sub.download_location = path;
             new_anime_sub.move_completed = path;
-            new_anime_sub.regex_include = `(?=.*${regex})(?=.*1080)`;
+            new_anime_sub.regex_include = `(?i)${regex}.*1080p`;
 
             const rssJson = yarss.yarss;
 
@@ -134,7 +134,6 @@ module.exports = {
                         setTimeout(() => {
                             message.edit({ embeds: [embed_animes] });
                         }, 2000)
-
                     }
                 }
                 else {
@@ -143,7 +142,6 @@ module.exports = {
                 if (compare) {
                     message_value = message.id;
                 } else {
-
                     const value = Object.values(databases[command]).find(o => o.id === id);
                     const index = Object.values(databases[command]).indexOf(value);
                     const key = Object.keys(databases[command])[index];
