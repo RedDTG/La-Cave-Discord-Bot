@@ -162,6 +162,7 @@ module.exports = {
                 realTimeHours = (parseInt(hours, 10) - 6 + 24) % 24;
                 realTimeMinutes = parseInt(minutes, 10);
                 if (realTimeMinutes < 10) { realTimeMinutes = `0${realTimeMinutes}`; }
+                if (realTimeHours < 10) { realTimeHours = `0${realTimeHours}`; }
 
             } else {
                 realTimeHours = "00";
@@ -307,7 +308,7 @@ module.exports = {
                 if (Horaires.jour.toLowerCase() === semaine.name.toLowerCase()) {
                     embed_calendar.fields[index].value = embed_calendar.fields[index].value.replace("```", "").replace("ini", "").replace("\n```", "").replace("```", "");
                     let calendar_title;
-                    season > 1 ? calendar_title = `[${Horaires.heure}] ${final_title} [${saison}]`: calendar_title = `[${Horaires.heure}] ${final_title}`
+                    season > 1 ? calendar_title = `[${Horaires.heure}] ${final_title}[${saison}]`: calendar_title = `[${Horaires.heure}] ${final_title}`
                     
                     if (embed_calendar.fields[index].value === " ") {
                         embed_calendar.fields[index].value = "\n- " + calendar_title;
@@ -315,6 +316,21 @@ module.exports = {
                         embed_calendar.fields[index].value += "\n- " + calendar_title;
                     }
                     embed_calendar.fields[index].value = "```ini" + embed_calendar.fields[index].value + "\n```";
+
+                    const tableau = embed_calendar.fields[index].value.split('\n');
+                    tableau.sort((a, b) => {
+                        const heureA = a.match(/\d{1,2}h\d{2}/);
+                        const heureB = b.match(/\d{1,2}h\d{2}/);
+                        if (heureA && heureB) {
+                          heureA_minutes = parseInt(heureA[0].replace('h', ''));
+                          heureB_minutes = parseInt(heureB[0].replace('h', ''));
+                          return heureA_minutes - heureB_minutes;
+                        } else {
+                          return 0;
+                        }
+                      });
+                      embed_calendar.fields[index].value= tableau.join('\n');
+
                 }
             })
             //notification
