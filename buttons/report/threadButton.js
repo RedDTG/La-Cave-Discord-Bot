@@ -1,5 +1,5 @@
 const { PermissionsBitField } = require('discord.js');
-const databases = { reports: require("../../data/reports.json") }
+const databases = { report: require("../../data/report.json") }
 
 module.exports = {
     name: 'thread-button',
@@ -11,8 +11,8 @@ module.exports = {
         let threadName = 'Thread de résolution'
         let authorTag = '{User_Introuvable}'
 
-        if (databases.reports[interaction.message.id]) {
-            let report_datas = databases.reports[interaction.message.id]
+        if (databases.report[interaction.message.id]) {
+            let report_datas = databases.report[interaction.message.id]
             client.users.fetch(report_datas.author, false).then((user) => { user.send(`Le bug que vous avez remonté ('**${report_datas.title}**') sur le fichier '__${report_datas.media}__' demande plus d'informations afin d'être résolu. Merci de vous rendre dans le fil associé à votre rapport de bug afin de vous entretenir avec un administrateur.`) });
 
             threadName = report_datas.title
