@@ -1,4 +1,5 @@
-const { TextInputBuilder, TextInputStyle, ActionRowBuilder, ModalBuilder, SelectMenuBuilder } = require('discord.js');
+const { TextInputBuilder, TextInputStyle, ActionRowBuilder, ModalBuilder } = require('discord.js');
+const databases = { config: require("../../data/config.json") }
 
 const modal = new ModalBuilder()
     .setCustomId('report-modal')
@@ -38,8 +39,16 @@ module.exports = {
     description: 'Reportez un bug !',
     permissions: [],
     runInteraction: async (client, interaction) => {
+        function isEmpty(obj) {
+            return JSON.stringify(obj) === '{}';
+        }
 
-        await interaction.showModal(modal);
-
+        if (isEmpty(databases.config)) {
+            return interaction.reply({ content: `Aucun channel n'est configuré`, ephemeral: true });
+        } else if (!databases.config[interaction.guildId].hasOwnProperty('report')) {
+            return interaction.reply({ content: `Le channel pour la commande : **\`/report\`**, n'est pas configuré`, ephemeral: true });
+        } else {
+            await interaction.showModal(modal);
+        }
     }
 }

@@ -21,10 +21,6 @@ const buttons = [
 module.exports = {
     name: 'report-modal',
     runInteraction(client, interaction) {
-        if (!databases.config[interaction.guildId].report) {
-            return interaction.reply({ content: `Le channel de reporting n'est pas configuré !`, ephemeral: true })
-        }
-
 
         const title = interaction.fields.getTextInputValue('report-title');
         const media = interaction.fields.getTextInputValue('report-media');
