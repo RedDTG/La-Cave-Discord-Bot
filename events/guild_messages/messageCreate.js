@@ -88,7 +88,7 @@ module.exports = {
                 command = "report";
             } else if (config["animes"] || config["suggest"]) {
 
-                const types = ["animes", "suggest"];
+                const types = ["suggest", "animes"];
                 const channels = {};
                 const threads = {};
 
@@ -96,15 +96,17 @@ module.exports = {
                     channels[type] = message.guild.channels.cache.get(config[type]);
                     if (channels[type]) {
                         threads[type] = channels[type].threads.cache.find(x => x.name === `Gestion-${type}`);
-                        if (threads[type].parentId === message.channelId || threads[type].id === message.channelId) {
-                            command = type;
-                            channelId = threads[type].parentId;
-
-                            if (command === "animes") {
-                                const notif = databases.notifications;
-                                const dernier_objet = notif[notif.length - 1];
-                                id = Object.keys(dernier_objet)[Object.keys(dernier_objet).length - 1];
-                                jour = await getJour(id);
+                        if (threads[type]){
+                            if (threads[type].parentId === message.channelId || threads[type].id === message.channelId) {
+                                command = type;
+                                channelId = threads[type].parentId;
+    
+                                if (command === "animes") {
+                                    const notif = databases.notifications;
+                                    const dernier_objet = notif[notif.length - 1];
+                                    id = Object.keys(dernier_objet)[Object.keys(dernier_objet).length - 1];
+                                    jour = await getJour(id);
+                                }
                             }
                         }
                     }
