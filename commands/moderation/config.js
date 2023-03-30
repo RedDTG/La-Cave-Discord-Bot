@@ -120,7 +120,7 @@ module.exports = {
                         });
                         const nom_saison = response.data.title;
 
-                        embed_animes.setTitle('Anime - ' + nom_saison);
+                        embed_animes.title = 'Anime - ' + nom_saison;
                         const calendar_msg = await client.channels.cache.get(calendarChoice.id).send({ embeds: [embed_animes] });
                         config["calendar"] = calendarChoice.id;
                         config["calendar_msg_id"] = calendar_msg.id;
