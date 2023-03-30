@@ -7,6 +7,10 @@ const { writeFile } = require('fs');
 module.exports = {
     name: 'animes-supprimer-button',
     permissions: [PermissionsBitField.Flags.ManageMessages],
+    overwritePermissions: {
+           id: 1055462207011422218,
+           deny: ['SEND_MESSAGES'],
+        },
     async runInteraction(client, interaction) {
 
         const config = databases.config[interaction.guildId];
