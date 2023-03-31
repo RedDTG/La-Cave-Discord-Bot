@@ -29,3 +29,4 @@ module.exports = {
         return interaction.reply({ content: 'Contenu ajouté !', ephemeral: true })
     }
 };
+

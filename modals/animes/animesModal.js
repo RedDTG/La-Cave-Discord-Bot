@@ -270,7 +270,7 @@ module.exports = {
             embed.setTitle(tmp_title);
             final_title = tmp_title;
         } else if (!saison) {
-            embed.setTitle(final_title);
+            embed.title = final_title;
             saison = 1;
             embed.addFields({ name: `path_season`, value: `${saison}`, inline: false })
             
@@ -295,7 +295,7 @@ module.exports = {
         let current_season = embed_calendar.title;
         current_season = current_season.split(" - ")[1];
         if (nom_saison !== current_season) {
-            embed_calendar.setTitle('Anime - ' + nom_saison);
+            embed_calendar.title = 'Anime - ' + nom_saison
         }
         //modification de la ligne (avec détéction du jour)
         if (Horaires.jour !== "TBA") {
