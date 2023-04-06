@@ -1,5 +1,5 @@
 const { TextInputBuilder, TextInputStyle, ActionRowBuilder, ModalBuilder, PermissionsBitField } = require('discord.js');
-const databases = { config: require("../../data/config.json") }
+const databases = { config: require("../../../data/config.json") }
 
 const animesModal = new ModalBuilder()
     .setCustomId('animes-modal')

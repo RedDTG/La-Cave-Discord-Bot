@@ -1,5 +1,5 @@
 const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder, PermissionsBitField, TextInputBuilder } = require('discord.js');
-const databases = { config: require("../../data/config.json"), notifications: require("../../data/notifications.json"), animes: require("../../data/animes.json") };
+const databases = { config: require("../../../data/config.json"), notifications: require("../../../data/notifications.json"), animes: require("../../../data/animes.json") };
 const axios = require('axios');
 const { writeFile, copyFileSync } = require('fs');
 const { threadId } = require('worker_threads');
@@ -231,7 +231,7 @@ module.exports = {
                 }
                 tmp_title = final_title;
             } else {
-                edges.title = final_title;
+                edges.data.title = final_title;
                 const data_prequel = await recursiveCall(hasPrequel, edges);
                 saison = data_prequel.compteur + 1;
                 match = synonyms.find(str => /Part (\d+)/.test(str));
@@ -270,7 +270,7 @@ module.exports = {
             embed.setTitle(tmp_title);
             final_title = tmp_title;
         } else if (!saison) {
-            embed.title = final_title;
+            embed.data.title = final_title;
             saison = 1;
             embed.addFields({ name: `path_season`, value: `${saison}`, inline: false })
             
@@ -295,7 +295,7 @@ module.exports = {
         let current_season = embed_calendar.title;
         current_season = current_season.split(" - ")[1];
         if (nom_saison !== current_season) {
-            embed_calendar.title = 'Anime - ' + nom_saison
+            embed_calendar.data.title = 'Anime - ' + nom_saison
         }
         //modification de la ligne (avec détéction du jour)
         if (Horaires.jour !== "TBA") {
@@ -330,7 +330,7 @@ module.exports = {
             })
             //notification
             const configData = JSON.stringify(notif_)
-            writeFile("data/notifications.json", configData, (err) => { if (err) { console.log(err) } });
+            writeFile("../data/notifications.json", configData, (err) => { if (err) { console.log(err) } });
 
             //modification du message
             await channel_calendar.messages.fetch(calendar_msg.id).then(msg => { msg.edit({ embeds: [embed_calendar] }) });

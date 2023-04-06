@@ -1,5 +1,5 @@
-const databases = { suggest: require("../../data/suggest.json"), report: require("../../data/report.json"), animes: require("../../data/animes.json"), config: require("../../data/config.json"), notifications: require("../../data/notifications.json") }
-const yarss = { yarss: require("../../data/yarss2/yarss2.json") }
+const databases = { suggest: require("../../../data/suggest.json"), report: require("../../../data/report.json"), animes: require("../../../data/animes.json"), config: require("../../../data/config.json"), notifications: require("../../../data/notifications.json") }
+const yarss = { yarss: require("../../../data/yarss2/yarss2.json") }
 const { writeFile } = require('fs');
 const axios = require('axios');
 
@@ -47,7 +47,10 @@ module.exports = {
             const new_anime_sub = JSON.parse('{"active": true,"add_torrents_in_paused_state": "Default","auto_managed": "Default","custom_text_lines": "","download_location": "/ocean/animes/One Piece/S1/","email_notifications": {},"ignore_timestamp": false,"key": "0","label": "","last_match": "","max_connections": -2,"max_download_speed": -2,"max_upload_slots": -2,"max_upload_speed": -2,"move_completed": "/ocean/animes/One Piece/S1/","name": "One Piece","prioritize_first_last_pieces": "Default","regex_exclude": ".(?i) FRENCH | MULTI |.mp4","regex_exclude_ignorecase": true,"regex_include": "(?i)One Piece.*1080p","regex_include_ignorecase": true,"rssfeed_key": "0","sequential_download": "Default"}');
             const date = new Date(new Date(Date.now()).setDate(new Date(Date.now()).getDate() - 1)).toISOString().replace(/\.\d+/, "").replace(/Z$/, "+00:00");
 
+            path_title = path_title.replace(/[’]+/, "'");
+            path_title = path_title.replace(/[.]+/, ". ");
             const replaced_title = path_title.replace(/[\/#+$~%"`:;*<>{}|^@!,? ]+/, " ").replace("  ", " ").trim();
+
 
             const path = `/ocean/animes/${replaced_title}/S${path_season}`;
             const regex = replaced_title.split(" ").slice(0, 2).join(" ");
@@ -60,15 +63,21 @@ module.exports = {
 
             const rssJson = yarss.yarss;
 
+            for (const key in rssJson.subscriptions) {
+                const sub = rssJson.subscriptions[key];
+                sub.last_match = new_anime_sub.last_match;
+                rssJson.subscriptions[key] = JSON.parse(JSON.stringify(sub));
+              }
+
             rssJson.subscriptions[key] = new_anime_sub;
 
             const configDataRss = JSON.stringify(rssJson, null, 4)
-            writeFile("data/yarss2/yarss2.json", configDataRss, (err) => { if (err) { console.log(err) } });
+            writeFile("../data/yarss2/yarss2.json", configDataRss, (err) => { if (err) { console.log(err) } });
 
             const conf = JSON.stringify(yarss.yarss, null, 4);
             const str_start = JSON.stringify(JSON.parse('{"file": 8,"format": 1}'), null, 2);
             const str_FINAL = str_start + conf
-            writeFile("data/yarss2/yarss2.conf", str_FINAL, (err) => { if (err) { console.log(err) } });
+            writeFile("../data/yarss2/yarss2.conf", str_FINAL, (err) => { if (err) { console.log(err) } });
 
         }
 
@@ -161,7 +170,7 @@ module.exports = {
                     day: command === "animes" ? jour : undefined,
                 }
                 const configData = JSON.stringify(databases[command]);
-                writeFile(`data/${command}.json`, configData, (err) => { if (err) { console.log(err) } });
+                writeFile(`../data/${command}.json`, configData, (err) => { if (err) { console.log(err) } });
                 if (command === "animes" && compare) {
                     setYarss(path_title, path_season);
                 }

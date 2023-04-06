@@ -1,5 +1,5 @@
 const { PermissionsBitField } = require('discord.js');
-const databases = { animes: require("../../data/animes.json"), notifications: require("../../data/notifications.json") }
+const databases = { animes: require("../../../data/animes.json"), notifications: require("../../../data/notifications.json") }
 const { writeFile } = require('fs');
 
 
@@ -29,7 +29,7 @@ module.exports = {
         }
         
         const configData =  JSON.stringify(databases.notifications);
-        writeFile("data/notifications.json", configData, (err) => { if (err) { console.log(err) } });
+        writeFile("../data/notifications.json", configData, (err) => { if (err) { console.log(err) } });
         return interaction.reply({ content: content, ephemeral: true })
     }
 };

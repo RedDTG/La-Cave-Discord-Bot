@@ -1,6 +1,6 @@
 const { TextInputBuilder, TextInputStyle, ActionRowBuilder, ModalBuilder, PermissionsBitField } = require('discord.js');
 const animesModal = require('../../modals/animes/animesModal');
-const databases = { config: require("../../data/config.json"), notifications: require("../../data/notifications.json"), animes: require("../../data/animes.json"),  }
+const databases = { config: require("../../../data/config.json"), notifications: require("../../../data/notifications.json"), animes: require("../../../data/animes.json"),  }
 
 module.exports = {
     name: 'list',

@@ -1,5 +1,5 @@
 const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder } = require('discord.js');
-const databases = { config: require("../../data/config.json") }
+const databases = { config: require("../../../data/config.json") }
 
 
 const buttons = [

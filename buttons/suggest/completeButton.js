@@ -1,5 +1,5 @@
 const { PermissionsBitField } = require('discord.js');
-const databases = { suggest: require("../../data/suggest.json"), config: require("../../data/config.json") }
+const databases = { suggest: require("../../../data/suggest.json"), config: require("../../../data/config.json") }
 const { writeFile } = require('fs');
 
 
@@ -21,7 +21,7 @@ module.exports = {
             delete databases.suggest[interaction.message.id];;
 
             const configData = JSON.stringify(databases.suggest);
-            writeFile("data/suggest.json", configData, (err) => { if (err) { console.log(err) } });
+            writeFile("../data/suggest.json", configData, (err) => { if (err) { console.log(err) } });
         }
 
         interaction.message.delete();
