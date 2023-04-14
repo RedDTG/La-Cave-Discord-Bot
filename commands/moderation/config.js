@@ -1,6 +1,6 @@
 const { PermissionsBitField, ChannelType, EmbedBuilder } = require('discord.js');
-const databases = { config: require("../../data/config.json"), notifications: require("../../data/notifications.json"), animes: require("../../data/animes.json") }
-const yarss = { yarss: require("../../data/yarss2/yarss2.json")}
+const databases = { config: require("../../../data/config.json"), notifications: require("../../../data/notifications.json"), animes: require("../../../data/animes.json") }
+const yarss = { yarss: require("../../../data/yarss2/yarss2.json")}
 const { writeFile } = require('fs');
 const axios = require('axios');
 
@@ -101,9 +101,9 @@ module.exports = {
                             yarss.yarss.subscriptions = {};
                             const configDataRss = JSON.stringify(yarss.yarss, null, 4)
                             
-                            writeFile("data/notifications.json", configDataNotif, (err) => { if (err) { console.log(err) } });
-                            writeFile("data/animes.json", configDataAnimes, (err) => { if (err) { console.log(err) } });
-                            writeFile("data/yarss2/yarss2.json", configDataRss, (err) => { if (err) { console.log(err) } });
+                            writeFile("../data/notifications.json", configDataNotif, (err) => { if (err) { console.log(err) } });
+                            writeFile("../data/animes.json", configDataAnimes, (err) => { if (err) { console.log(err) } });
+                            writeFile("../data/yarss2/yarss2.json", configDataRss, (err) => { if (err) { console.log(err) } });
                         }
                     }
                     delete config[typeChoice];
@@ -120,7 +120,7 @@ module.exports = {
                         });
                         const nom_saison = response.data.title;
 
-                        embed_animes.title = 'Anime - ' + nom_saison;
+                        embed_animes.data.title = 'Anime - ' + nom_saison;
                         const calendar_msg = await client.channels.cache.get(calendarChoice.id).send({ embeds: [embed_animes] });
                         config["calendar"] = calendarChoice.id;
                         config["calendar_msg_id"] = calendar_msg.id;
@@ -150,7 +150,7 @@ module.exports = {
                 return interaction.reply({ content: `Merci de faire un vrai choix :)`, ephemeral: true });
             }
             const configData = JSON.stringify(databases.config)
-            writeFile("data/config.json", configData, (err) => {
+            writeFile("../data/config.json", configData, (err) => {
                 if (err) {
                     console.log(err);
                 }

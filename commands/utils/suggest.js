@@ -1,6 +1,6 @@
 const { TextInputBuilder, TextInputStyle, ActionRowBuilder, ModalBuilder, SelectMenuBuilder, Message } = require('discord.js');
 const { type } = require('os');
-const databases = { config: require("../../data/config.json") }
+const databases = { config: require("../../../data/config.json") }
 
 const suggestModal = new ModalBuilder()
     .setCustomId(`suggest-modal`)

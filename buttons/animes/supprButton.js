@@ -1,6 +1,6 @@
 const { PermissionsBitField } = require('discord.js');
-const databases = { animes: require("../../data/animes.json"), notifications: require("../../data/notifications.json"), config: require("../../data/config.json"), }
-const yarss = { yarss: require("../../data/yarss2/yarss2.json") }
+const databases = { animes: require("../../../data/animes.json"), notifications: require("../../../data/notifications.json"), config: require("../../../data/config.json"), }
+const yarss = { yarss: require("../../../data/yarss2/yarss2.json") }
 const { writeFile } = require('fs');
 
 
@@ -62,22 +62,22 @@ module.exports = {
                     i++;
                 }
                 const configDataRss = JSON.stringify(rssJson, null, 4)
-                writeFile("data/yarss2/yarss2.json", configDataRss, (err) => { if (err) { console.log(err) } });
+                writeFile("../data/yarss2/yarss2.json", configDataRss, (err) => { if (err) { console.log(err) } });
 
                 const conf = JSON.stringify(yarss.yarss, null, 4);
                 const str_start = JSON.stringify(JSON.parse('{"file": 8,"format": 1}'), null, 2);
                 const str_FINAL = str_start + conf
-                writeFile("data/yarss2/yarss2.conf", str_FINAL, (err) => { if (err) { console.log(err) } });
+                writeFile("../data/yarss2/yarss2.conf", str_FINAL, (err) => { if (err) { console.log(err) } });
 
                 databases.notifications.splice(index, 1);
             }
 
             const configData = JSON.stringify(databases.notifications);
-            writeFile("data/notifications.json", configData, (err) => { if (err) { console.log(err) } });
+            writeFile("../data/notifications.json", configData, (err) => { if (err) { console.log(err) } });
 
             delete databases.animes[interaction.message.id];
             const configData_ = JSON.stringify(databases.animes);
-            writeFile("data/animes.json", configData_, (err) => { if (err) { console.log(err) } });
+            writeFile("../data/animes.json", configData_, (err) => { if (err) { console.log(err) } });
         }
 
         return interaction.reply({ content: 'Anime supprimé !', ephemeral: true })

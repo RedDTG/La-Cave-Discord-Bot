@@ -1,5 +1,5 @@
 const { PermissionsBitField } = require('discord.js');
-const databases = { report: require("../../data/report.json") }
+const databases = { report: require("../../../data/report.json") }
 
 module.exports = {
     name: 'thread-button',

@@ -1,5 +1,5 @@
 const { TextInputBuilder, TextInputStyle, ActionRowBuilder, ModalBuilder } = require('discord.js');
-const databases = { config: require("../../data/config.json") }
+const databases = { config: require("../../../data/config.json") }
 
 const modal = new ModalBuilder()
     .setCustomId('report-modal')
