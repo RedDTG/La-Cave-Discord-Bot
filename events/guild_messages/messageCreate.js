@@ -61,7 +61,7 @@ module.exports = {
             new_anime_sub.name = replaced_title;
             new_anime_sub.download_location = path;
             new_anime_sub.move_completed = path;
-            new_anime_sub.regex_include = `(?i)(?=.*${regex})(?=.*1080p).+`;
+            new_anime_sub.regex_include = `(?i)(?=.*${regex})(?=.*1080p)(?=.*S\d{2}E\d{2}).+`;
 
             const rssJson = yarss.yarss;
 
