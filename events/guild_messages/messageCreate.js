@@ -61,7 +61,7 @@ module.exports = {
             new_anime_sub.name = replaced_title;
             new_anime_sub.download_location = path;
             new_anime_sub.move_completed = path;
-            new_anime_sub.regex_include = `(?i)(?=.*${regex})(?=.*1080p)(?=.*S\\d{2}E\\d{2}).+`;
+            new_anime_sub.regex_include = `(?i)(?=.*${regex})(?=.*1080p)(?=.*S\d{2}E\d{2}).+`;
 
             const rssJson = yarss.yarss;
 
@@ -79,9 +79,7 @@ module.exports = {
             const conf = JSON.stringify(yarss.yarss, null, 4);
             const str_start = JSON.stringify(JSON.parse('{"file": 8,"format": 1}'), null, 2);
             const str_FINAL = str_start + conf
-            const str_FINAL_regex = str_FINAL.replace(/\\\\d/g, '\\d');
-
-            writeFile("../data/yarss2/yarss2.conf", str_FINAL_regex, (err) => { if (err) { console.log(err) } });
+            writeFile("../data/yarss2/yarss2.conf", str_FINAL, (err) => { if (err) { console.log(err) } });
 
         }
 
