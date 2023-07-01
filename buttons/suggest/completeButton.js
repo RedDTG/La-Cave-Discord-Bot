@@ -24,7 +24,8 @@ module.exports = {
             writeFile("../data/suggest.json", configData, (err) => { if (err) { console.log(err) } });
         }
 
-        interaction.message.delete();
+        interaction.message.edit({components: []});
+        //interaction.message.delete();
 
         return interaction.reply({ content: 'Contenu ajouté !', ephemeral: true })
     }
