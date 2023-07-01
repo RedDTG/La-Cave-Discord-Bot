@@ -218,7 +218,10 @@ module.exports = {
             tmp_title = match_season.replace(/\s\d+(st|nd|rd|th).*/, "");
         } else {
             hasPrequel = edges.some(edge => edge.relationType === 'PREQUEL');
-            if (!hasPrequel) {
+            hasParent = edges.some(edge => edge.relationType === 'PARENT');
+            hasAlternative = edges.some(edge => edge.relationType === 'ALTERNATIVE');
+
+            if (!hasPrequel && !hasParent && !hasAlternative) {
                 const hasSource = edges.some(edge => edge.relationType === 'SOURCE');
                 if (hasSource && title_english) {
                     final_title = edges
@@ -230,12 +233,20 @@ module.exports = {
                     title_english ? final_title = title_english : final_title = title_romaji;
                 }
                 tmp_title = final_title;
-            } else {
-                edges.data.title = final_title;
-                const data_prequel = await recursiveCall(hasPrequel, edges);
-                saison = data_prequel.compteur + 1;
+            } else{
+                let data_prequel;
+                if (hasPrequel){
+                    data_prequel = await recursiveCall(hasPrequel, edges);
+                    saison = data_prequel.compteur + 1;
+                    data_prequel.path_title ? tmp_title = data_prequel.path_title : tmp_title = final_title;
+
+                }else{
+                    data_prequel = animeData
+                    data_prequel.path_title = tmp_title;
+                }
+                
                 match = synonyms.find(str => /Part (\d+)/.test(str));
-                data_prequel.path_title ? tmp_title = data_prequel.path_title : tmp_title = final_title;
+                if(match){ if (match.match(/Part (\d+)/)) {part = match.match(/Part (\d+)/)[1];}}
             }
         }
 
