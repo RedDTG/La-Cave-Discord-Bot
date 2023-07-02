@@ -56,12 +56,18 @@ module.exports = {
 
             const path = `/ocean/animes/${replaced_title}/S${path_season}`;
             const regex = replaced_title.split(" ").slice(0, 2).join(" ");
+            const regex_words = regex.split(" ");
+            const regex_results = regex_words.map(function(word) {
+            return "(?=.*" + word + ")";
+            });
+            const result = regex_results.join("");
+            
             new_anime_sub.key = String(`${key}`);
             new_anime_sub.last_match = String(`${date}`);
             new_anime_sub.name = replaced_title;
             new_anime_sub.download_location = path;
             new_anime_sub.move_completed = path;
-            new_anime_sub.regex_include = `(?i)(?=.*${regex})(?=.*1080p)(?=.*S\\d{2}E\\d{2}).+`;
+            new_anime_sub.regex_include = `(?i)${result}(?=.*1080p)(?=.*S\\d{2}E\\d{2}).+`;
 
             const rssJson = yarss.yarss;
 
