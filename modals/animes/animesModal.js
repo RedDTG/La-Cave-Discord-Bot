@@ -187,7 +187,7 @@ module.exports = {
         //Récupération final anime
         const animeData = await callAPI(titre);
 
-        if (!animeData || !animeData.idMal) return interaction.reply({ content: "Anime pas dans cette saison ou pas trouvé", ephemeral: true });
+        if (!animeData || !animeData.idMal) return interaction.reply({ content: `\`${titre}\` ne sort pas encore ou n'a pas été trouvé`, ephemeral: true });
 
         //Récupération variable dans anime
         const { relations: { edges: edges }, id: ani_id, idMal: mal_id, title: { english: title_english, romaji: title_romaji }, coverImage: { extraLarge: URL_POSTER }, synonyms } = animeData;
