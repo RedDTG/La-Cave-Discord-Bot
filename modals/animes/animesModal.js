@@ -30,7 +30,7 @@ module.exports = {
     async runInteraction(client, interaction) {
         async function callAPI(titre, id) {
 
-            let arguments = titre ? `type: ANIME, search: "${titre}", status_in: [RELEASING]` : `type: ANIME, id: ${id}`;
+            let arguments = titre ? `type: ANIME, search: "${titre}", status_in: [RELEASING], format_in:[TV, TV_SHORT]` : `type: ANIME, id: ${id}`;
 
 
             const query = `
