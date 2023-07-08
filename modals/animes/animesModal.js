@@ -346,7 +346,7 @@ module.exports = {
                 if (Horaires.jour.toLowerCase() === semaine.name.toLowerCase()) {
                     embed_calendar.fields[index].value = embed_calendar.fields[index].value.replace("```", "").replace("ini", "").replace("\n```", "").replace("```", "");
                     let calendar_title;
-                    season > 1 ? calendar_title = `[${Horaires.heure}] ${final_title}[${saison}]`: calendar_title = `[${Horaires.heure}] ${final_title}`
+                    season > 1 ? calendar_title = `[${Horaires.heure}] ${final_title.trim()+' '}[${saison}]`: calendar_title = `[${Horaires.heure}] ${final_title}`
                     
                     if (embed_calendar.fields[index].value === " ") {
                         embed_calendar.fields[index].value = "\n- " + calendar_title;
