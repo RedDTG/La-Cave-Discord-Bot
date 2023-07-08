@@ -91,27 +91,31 @@ module.exports = {
             return responseJSON.data.data.results.media[0];
         }
 
-        async function recursiveCall(data, edges, compteur) {
+        async function recursiveCall(data, edges, synonyms, format, compteur) {
             if (!compteur) compteur = 0;
+
+            const isPart = synonyms.find(str => /Part (\d+)/.test(str));
+            if ((format === "TV" || format === "ONA") && !isPart) {
+                compteur++;
+            }
+
+            
             data = edges.filter(edge => edge.relationType && edge.relationType === 'PREQUEL')
                 .sort((b, a) => {
                     const dateA = new Date(a.node.startDate.year, a.node.startDate.month, a.node.startDate.day);
                     const dateB = new Date(b.node.startDate.year, b.node.startDate.month, b.node.startDate.day);
                     return dateA - dateB;
                 });
-            const { node: { id: id_call, format: format, synonyms, title: { english, romaji } } } = data[0];
-            synonyms.push(english);
-            synonyms.push(romaji);
-            const isPart = synonyms.find(str => /Part (\d+)/.test(str));
-            if ((format === "TV" || format === "ONA") && !isPart) {
-                compteur++;
-            }
-
-
+            
+            const { node: { id: id_call, format: format_prequel, synonyms: synonyms_prequel, title: { english, romaji } } } = data[0];
+            synonyms_prequel.push(english);
+            synonyms_prequel.push(romaji);
+                
+            
             data_prequel = await callAPI(null, id_call);
             let { relations: { edges: edges_prequel } } = data_prequel;
 
-            if (format !== "TV" && format !== "ONA") {
+            if (format_prequel !== "TV" && format_prequel !== "ONA") {
                 edges_prequel.path_title = edges.path_title;
             } else {
                 english ? edges_prequel.path_title = english : edges_prequel.path_title = romaji;
@@ -120,7 +124,7 @@ module.exports = {
             hasPrequel = edges_prequel.some(edge => edge.relationType === 'PREQUEL');
 
             if (hasPrequel) {
-                return await recursiveCall(data_prequel, edges_prequel, compteur)
+                return await recursiveCall(data_prequel, edges_prequel, synonyms_prequel, format_prequel, compteur)
             } else {
                 data_prequel.path_title = edges_prequel.path_title;
                 data_prequel.compteur = compteur;
@@ -216,7 +220,7 @@ module.exports = {
         } 
 
         //Récupération variable dans anime
-        const { relations: { edges: edges }, id: ani_id, idMal: mal_id, title: { english: title_english, romaji: title_romaji }, coverImage: { extraLarge: URL_POSTER }, synonyms } = animeData;
+        const { relations: { edges: edges }, id: ani_id, idMal: mal_id, format: format, title: { english: title_english, romaji: title_romaji }, coverImage: { extraLarge: URL_POSTER }, synonyms } = animeData;
 
         //Doublon ?
         const exists = notif_.some(obj => Object.keys(obj)[0] === String(mal_id));
@@ -262,7 +266,7 @@ module.exports = {
             } else{
                 let data_prequel;
                 if (hasPrequel){
-                    data_prequel = await recursiveCall(hasPrequel, edges);
+                    data_prequel = await recursiveCall(hasPrequel, edges, synonyms, format);
                     saison = data_prequel.compteur + 1;
                     data_prequel.path_title ? tmp_title = data_prequel.path_title : tmp_title = final_title;
 
