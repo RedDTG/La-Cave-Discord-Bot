@@ -143,6 +143,7 @@ module.exports = {
 
                         path_title = embed_animes.fields.filter(item => item.name === 'path_title').map(item => item.value)[0];
                         path_season = embed_animes.fields.filter(item => item.name === 'path_season').map(item => item.value)[0];
+                        if (!jour) jour = embed_animes.fields.filter(item => item.name === 'Jour').map(item => item.value)[0];
 
                         let index = await embed_animes.fields.findIndex(({ name }) => name === 'path_title');
                         if (index !== -1) embed_animes.fields.splice(index, 1);

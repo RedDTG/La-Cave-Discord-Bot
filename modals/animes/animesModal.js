@@ -30,7 +30,9 @@ module.exports = {
     async runInteraction(client, interaction) {
         async function callAPI(titre, id) {
 
-            let arguments = titre ? `type: ANIME, search: "${titre}", status_in: [RELEASING], format_in:[TV, TV_SHORT]` : `type: ANIME, id: ${id}`;
+            let arguments = titre ? `type: ANIME, search: "${titre}", status_in: [RELEASING, NOT_YET_RELEASED], 
+            format_in:[TV, TV_SHORT, ONA], sort: [STATUS, START_DATE]` 
+            : `type: ANIME, id: ${id}`;
 
 
             const query = `
@@ -38,9 +40,14 @@ module.exports = {
                 results: Page(perPage: 1) {
                   media(${arguments}) {
                     id
+                    status
                     idMal
                     synonyms
                     format
+                    nextAiringEpisode {
+                      id
+                      timeUntilAiring
+                    }
                     title {
                       romaji
                       userPreferred
@@ -75,6 +82,7 @@ module.exports = {
                   }
                 }
               }
+              
               
                 `;
 
@@ -129,7 +137,7 @@ module.exports = {
             return nom_saison;
         }
 
-        async function getDay(animeData) {
+        async function getDay(animeData, timeUntilAiring) {
             //Jour de la semaine Anglais - Français
             const jour_semaine = {
                 nom_fr: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
@@ -153,10 +161,11 @@ module.exports = {
                     }
                 }
             }
-
+            
             //horaire france (-8h)
             let realTimeHours
             let realTimeMinutes
+
             if (time) {
                 const [hours, minutes] = time.split(":");
                 realTimeHours = (parseInt(hours, 10) - 6 + 24) % 24;
@@ -164,12 +173,25 @@ module.exports = {
                 if (realTimeMinutes < 10) { realTimeMinutes = `0${realTimeMinutes}`; }
                 if (realTimeHours < 10) { realTimeHours = `0${realTimeHours}`; }
 
-            } else {
+            } else if (timeUntilAiring) {
+                // Récupérer le jour et l'heure grâce au 1er episode qui sort (pas très accurate mais pour les NOT_YET_RELEASED)
+                const currentDate = new Date();
+                const futureDate = new Date(currentDate.getTime() + (timeUntilAiring * 1000));
+
+                var index = futureDate.getDay()
+                index = index === 0 ? index = 6 : index -= 1;
+                jour = jour_semaine.nom_fr[index];
+                
+                realTimeHours = futureDate.getHours().toString().padStart(2, '0');
+                realTimeMinutes = futureDate.getMinutes().toString().padStart(2, '0');
+                //var futureSecond = futureDate.getSeconds().toString().padStart(2, '0');
+                
+            }else{
                 realTimeHours = "00";
                 realTimeMinutes = "00";
             }
-            if (!jour) jour = "TBA";
 
+            if (!jour) jour = "TBA";
 
             const obj = {
                 jour: jour,
@@ -187,7 +209,11 @@ module.exports = {
         //Récupération final anime
         const animeData = await callAPI(titre);
 
-        if (!animeData || !animeData.idMal) return interaction.reply({ content: `\`${titre}\` ne sort pas encore ou n'a pas été trouvé`, ephemeral: true });
+        if (!animeData || !animeData.idMal || !animeData.nextAiringEpisode){
+            const title_error = animeData.title.english || animeData.title.romaji || animeData.title.userPreferred || animeData.title.native || titre;
+
+            return interaction.reply({ content: `\`${title_error}\` ne sort pas encore, n'a pas été trouvé ou n'a pas encore de date de sortie`, ephemeral: true });
+        } 
 
         //Récupération variable dans anime
         const { relations: { edges: edges }, id: ani_id, idMal: mal_id, title: { english: title_english, romaji: title_romaji }, coverImage: { extraLarge: URL_POSTER }, synonyms } = animeData;
@@ -255,7 +281,9 @@ module.exports = {
             headers: { "Accept-Encoding": "gzip,deflate,compress" }
         });
         const data_anime = await response.data.data;
-        const Horaires = await getDay(data_anime);
+
+        const Horaires = await getDay(data_anime, animeData.nextAiringEpisode.timeUntilAiring);
+
         //Création du message de sortie
         const embed = new EmbedBuilder()
             .setTitle(final_title)
