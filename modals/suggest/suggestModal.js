@@ -57,6 +57,8 @@ module.exports = {
             embed.addFields({ name: `Année`, value: year.value, inline: false });
         }
 
+        title_url += ' multi'
+
         quotedWords = encodeURIComponent(title_url.split(" ").map(word => `"${word}"`).join(" "));
 
         switch (type) {
