@@ -42,7 +42,12 @@ module.exports = {
             );
 
         if (season && season.value) {
-            title_url = title.value + ' ' + season.value;
+            if(parseInt(season.value) < 10){
+                title_url = title.value + ' S0' + season.value;
+            }else{
+                title_url = title.value;
+            }
+            
             embed.addFields({ name: `Saison`, value: season.value, inline: true });
         }
         if (creator && creator.value) {
