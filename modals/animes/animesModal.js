@@ -31,7 +31,7 @@ module.exports = {
         async function callAPI(titre, id) {
 
             let arguments = titre ? `type: ANIME, search: "${titre}", status_in: [RELEASING, NOT_YET_RELEASED], 
-            format_in:[TV, TV_SHORT, ONA], sort: [STATUS, START_DATE]` 
+            format_in:[TV, TV_SHORT, ONA], sort: TRENDING_DESC` 
             : `type: ANIME, id: ${id}`;
 
 
