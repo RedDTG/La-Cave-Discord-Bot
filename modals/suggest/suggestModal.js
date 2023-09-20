@@ -94,12 +94,12 @@ module.exports = {
 
 
         await client.channels.cache
-            .get(databases.config[interaction.guildId].suggest).threads.cache
-            .find(x => x.name === 'Gestion-suggest')
+            .get(databases.config[interaction.guildId].suggest).threads
+            .fetch(config[`suggest-thread`])
             .send({ embeds: [embed], components: buttons }).then(()=>
             setTimeout(()=> {
                 client.channels.cache.get(databases.config[interaction.guildId].suggest).send({ embeds: [embed] });
-            }, 1000)            
+            }, 2000)            
         );;
             
         

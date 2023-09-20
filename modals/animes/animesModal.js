@@ -381,7 +381,8 @@ module.exports = {
         }
 
         const channel = client.channels.cache.get(config["animes"]);
-        const thread = channel.threads.cache.find(x => x.name === 'Gestion-animes');
+        const thread = await channel.threads.fetch(config["animes-thread"]);
+
         await thread.send({ embeds: [embed], components: buttonMod }).then(() =>
             setTimeout(() => {
                 client.channels.cache.get(config["animes"]).send({ embeds: [embed], components: buttons });

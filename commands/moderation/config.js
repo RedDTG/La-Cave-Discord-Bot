@@ -82,6 +82,7 @@ module.exports = {
                     if (typeChoice === "animes" || typeChoice === "suggest") {
                         const fetchedChannel = interaction.guild.channels.cache.get(config[typeChoice]);
                         const thread = fetchedChannel.threads.cache.find(x => x.name === `Gestion-${typeChoice}`);
+                        delete config[`${typeChoice}-thread`];
                         await thread.delete();
                         
                         if (typeChoice === "animes") {
@@ -130,8 +131,9 @@ module.exports = {
                     const thread = await channelChoice.threads.create({
                         name: `Gestion-${typeChoice}`,
                         autoArchiveDuration: 10080,
-                        type: ChannelType.GuildPrivateThread,
+                        type: ChannelType.PrivateThread,
                     });
+                    config[`${typeChoice}-thread`] = thread.id;
                     await thread.members.add(interaction.user.id);
 
                     config[typeChoice] = channelChoice.id;
