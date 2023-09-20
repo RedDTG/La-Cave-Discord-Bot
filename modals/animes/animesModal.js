@@ -99,7 +99,6 @@ module.exports = {
                 compteur++;
             }
 
-            
             data = edges.filter(edge => edge.relationType && edge.relationType === 'PREQUEL')
                 .sort((b, a) => {
                     const dateA = new Date(a.node.startDate.year, a.node.startDate.month, a.node.startDate.day);
@@ -110,7 +109,6 @@ module.exports = {
             const { node: { id: id_call, format: format_prequel, synonyms: synonyms_prequel, title: { english, romaji } } } = data[0];
             synonyms_prequel.push(english);
             synonyms_prequel.push(romaji);
-                
             
             data_prequel = await callAPI(null, id_call);
             let { relations: { edges: edges_prequel } } = data_prequel;
@@ -126,6 +124,9 @@ module.exports = {
             if (hasPrequel) {
                 return await recursiveCall(data_prequel, edges_prequel, synonyms_prequel, format_prequel, compteur)
             } else {
+                if (format_prequel !== "TV" && format_prequel !== "ONA"){
+                    compteur--;
+                }
                 data_prequel.path_title = edges_prequel.path_title;
                 data_prequel.compteur = compteur;
                 return data_prequel;
