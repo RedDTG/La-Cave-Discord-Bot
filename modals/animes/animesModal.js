@@ -1,8 +1,7 @@
-const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder, PermissionsBitField, TextInputBuilder } = require('discord.js');
+const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder } = require('discord.js');
 const databases = { config: require("../../../data/config.json"), notifications: require("../../../data/notifications.json"), animes: require("../../../data/animes.json") };
 const axios = require('axios');
 const { writeFile, copyFileSync } = require('fs');
-const { threadId } = require('worker_threads');
 
 
 const buttons = [
@@ -101,7 +100,7 @@ module.exports = {
                 }
                 return true;
             });
-            
+
             if ((format === "TV" || format === "ONA") && !isPart) {
                 compteur++;
             }

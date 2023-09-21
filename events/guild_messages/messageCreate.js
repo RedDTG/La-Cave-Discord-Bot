@@ -57,11 +57,11 @@ module.exports = {
             const path = `/ocean/animes/${replaced_title}/S0${path_season}`;
             const regex = replaced_title.split(" ").slice(0, 2).join(" ");
             const regex_words = regex.split(" ");
-            const regex_results = regex_words.map(function(word) {
-            return "(?=.*" + word + ")";
+            const regex_results = regex_words.map(function (word) {
+                return "(?=.*" + word + ")";
             });
             const result = regex_results.join("");
-            
+
             new_anime_sub.key = String(`${key}`);
             new_anime_sub.last_match = String(`${date}`);
             new_anime_sub.name = replaced_title;
@@ -75,7 +75,7 @@ module.exports = {
                 const sub = rssJson.subscriptions[key];
                 sub.last_match = String(`${date_now}`);
                 rssJson.subscriptions[key] = JSON.parse(JSON.stringify(sub));
-              }
+            }
 
             rssJson.subscriptions[key] = new_anime_sub;
 
@@ -113,11 +113,11 @@ module.exports = {
                     channels[type] = message.guild.channels.cache.get(config[type]);
                     if (channels[type]) {
                         threads[type] = channels[type].threads.fetch(config[`${type}-thread`]);
-                        if (threads[type]){
+                        if (threads[type]) {
                             if (threads[type].parentId === message.channelId || threads[type].id === message.channelId) {
                                 command = type;
                                 channelId = threads[type].parentId;
-    
+
                                 if (command === "animes") {
                                     const notif = databases.notifications;
                                     const dernier_objet = notif[notif.length - 1];

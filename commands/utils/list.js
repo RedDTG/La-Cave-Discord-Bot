@@ -1,6 +1,4 @@
-const { TextInputBuilder, TextInputStyle, ActionRowBuilder, ModalBuilder, PermissionsBitField } = require('discord.js');
-const animesModal = require('../../modals/animes/animesModal');
-const databases = { config: require("../../../data/config.json"), notifications: require("../../../data/notifications.json"), animes: require("../../../data/animes.json"),  }
+const databases = { config: require("../../../data/config.json"), notifications: require("../../../data/notifications.json"), animes: require("../../../data/animes.json"), }
 
 module.exports = {
     name: 'list',
@@ -13,7 +11,7 @@ module.exports = {
         const keys = notifs.filter(obj => {
             const key = Object.keys(obj)[0];
             return obj[key].includes(interaction.user.id);
-          }).map(obj => Object.keys(obj)[0]);
+        }).map(obj => Object.keys(obj)[0]);
 
         let title = "";
         keys.forEach(key => {
@@ -22,8 +20,8 @@ module.exports = {
             title += "\n";
         });
         if (title === "") title = "Pas encore de notifications pour toi :)";
-        
+
         return interaction.reply({ content: ` Voici ta liste : \n \`\`\`${title}\`\`\``, ephemeral: true });
-        
+
     }
 }

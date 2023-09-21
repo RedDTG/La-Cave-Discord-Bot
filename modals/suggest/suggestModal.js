@@ -42,12 +42,12 @@ module.exports = {
             );
 
         if (season && season.value) {
-            if(parseInt(season.value) < 10){
+            if (parseInt(season.value) < 10) {
                 title_url = title.value + ' S0' + season.value;
-            }else{
+            } else {
                 title_url = title.value;
             }
-            
+
             embed.addFields({ name: `Saison`, value: season.value, inline: true });
         }
         if (creator && creator.value) {
@@ -96,17 +96,17 @@ module.exports = {
         await client.channels.cache
             .get(databases.config[interaction.guildId].suggest).threads
             .fetch(config[`suggest-thread`])
-            .send({ embeds: [embed], components: buttons }).then(()=>
-            setTimeout(()=> {
-                client.channels.cache.get(databases.config[interaction.guildId].suggest).send({ embeds: [embed] });
-            }, 2000)            
-        );;
-            
-        
+            .send({ embeds: [embed], components: buttons }).then(() =>
+                setTimeout(() => {
+                    client.channels.cache.get(databases.config[interaction.guildId].suggest).send({ embeds: [embed] });
+                }, 2000)
+            );;
 
-        
 
-        
+
+
+
+
 
 
         return interaction.reply({ content: `Vous avez demandé ${title.value} !`, ephemeral: true })

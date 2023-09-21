@@ -1,6 +1,6 @@
 const { PermissionsBitField, ChannelType, EmbedBuilder } = require('discord.js');
 const databases = { config: require("../../../data/config.json"), notifications: require("../../../data/notifications.json"), animes: require("../../../data/animes.json") }
-const yarss = { yarss: require("../../../data/yarss2/yarss2.json")}
+const yarss = { yarss: require("../../../data/yarss2/yarss2.json") }
 const { writeFile } = require('fs');
 const axios = require('axios');
 
@@ -84,7 +84,7 @@ module.exports = {
                         const thread = fetchedChannel.threads.cache.find(x => x.name === `Gestion-${typeChoice}`);
                         delete config[`${typeChoice}-thread`];
                         await thread.delete();
-                        
+
                         if (typeChoice === "animes") {
                             const channel = interaction.guild.channels.cache.get(config["calendar"]);
                             const calendar_msg = await channel.messages.fetch(config["calendar_msg_id"]);
@@ -92,16 +92,16 @@ module.exports = {
 
                             delete config["calendar"];
                             delete config["calendar_msg_id"];
-                            
+
                             databases.animes = {};
                             databases.notifications.length = 0;
 
                             const configDataNotif = JSON.stringify(databases.notifications)
                             const configDataAnimes = JSON.stringify(databases.animes)
-                            
+
                             yarss.yarss.subscriptions = {};
                             const configDataRss = JSON.stringify(yarss.yarss, null, 4)
-                            
+
                             writeFile("../data/notifications.json", configDataNotif, (err) => { if (err) { console.log(err) } });
                             writeFile("../data/animes.json", configDataAnimes, (err) => { if (err) { console.log(err) } });
                             writeFile("../data/yarss2/yarss2.json", configDataRss, (err) => { if (err) { console.log(err) } });
@@ -116,8 +116,8 @@ module.exports = {
                 if ((typeChoice === "animes" && calendarChoice) || typeChoice === "suggest") {
                     if (typeChoice === "animes" && calendarChoice) {
                         const url = 'https://www.livechart.me/api/v1/charts/nearest';
-                        const response = await axios.get(url, { 
-                            headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+                        const response = await axios.get(url, {
+                            headers: { "Accept-Encoding": "gzip,deflate,compress" }
                         });
                         const nom_saison = response.data.title;
 

@@ -1,31 +1,30 @@
-const { TextInputBuilder, TextInputStyle, ActionRowBuilder, ModalBuilder, SelectMenuBuilder, Message } = require('discord.js');
-const { type } = require('os');
+const { TextInputBuilder, TextInputStyle, ActionRowBuilder, ModalBuilder } = require('discord.js');
 const databases = { config: require("../../../data/config.json") }
 
 const suggestModal = new ModalBuilder()
     .setCustomId(`suggest-modal`)
     .setComponents([
-    new ActionRowBuilder()
-        .setComponents(
-        new TextInputBuilder()
-            .setStyle(TextInputStyle.Short)
-            .setRequired(true)
-    ),
+        new ActionRowBuilder()
+            .setComponents(
+                new TextInputBuilder()
+                    .setStyle(TextInputStyle.Short)
+                    .setRequired(true)
+            ),
 
-    new ActionRowBuilder().setComponents(
-        new TextInputBuilder()
-            .setStyle(TextInputStyle.Short)
-            .setRequired(true)
-    ),
+        new ActionRowBuilder().setComponents(
+            new TextInputBuilder()
+                .setStyle(TextInputStyle.Short)
+                .setRequired(true)
+        ),
 
-    new ActionRowBuilder().setComponents(
-        new TextInputBuilder()
-            .setCustomId('suggest-infos')
-            .setLabel('Informations complémentaires')
-            .setStyle(TextInputStyle.Paragraph)
-            .setRequired(false),
-    ),
-]);
+        new ActionRowBuilder().setComponents(
+            new TextInputBuilder()
+                .setCustomId('suggest-infos')
+                .setLabel('Informations complémentaires')
+                .setStyle(TextInputStyle.Paragraph)
+                .setRequired(false),
+        ),
+    ]);
 
 
 module.exports = {
@@ -108,10 +107,10 @@ module.exports = {
                         .setCustomId("suggest-season")
                         .setLabel("Saison")
                         .setPlaceholder("5");
-                        
+
                     suggestModal.components[2].components[0].setPlaceholder(`J'aimerais bien en VO, /!\\ ne pas mettre de saison qui sort dans 8 ans - merci, LaCave Corp/!\\`);
 
-                    break; 
+                    break;
                 case "Livre Audio":
                     suggestModal.components[0].components[0]
                         .setCustomId(`suggest-title-${typeChoice}`)
@@ -123,12 +122,12 @@ module.exports = {
                         .setPlaceholder("Nicolas Sarkozy");
 
                     suggestModal.components[2].components[0].setPlaceholder(`Non vraiment je crois que même le développeur n'a jamais testé cette commande, seulement vous.`);
-                    
+
                     break;
             }
 
             await interaction.showModal(suggestModal)
-            
+
         }
     }
 }

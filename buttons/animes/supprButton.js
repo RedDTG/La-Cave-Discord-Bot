@@ -8,9 +8,9 @@ module.exports = {
     name: 'animes-supprimer-button',
     permissions: [PermissionsBitField.Flags.ManageMessages],
     overwritePermissions: {
-           id: 1055462207011422218,
-           deny: ['SEND_MESSAGES'],
-        },
+        id: 1055462207011422218,
+        deny: ['SEND_MESSAGES'],
+    },
     async runInteraction(client, interaction) {
 
         const config = databases.config[interaction.guildId];
@@ -26,10 +26,10 @@ module.exports = {
             embed_calendar.fields.forEach((semaine, index) => {
                 if (data_suppr.day.toLowerCase() === semaine.name.toLowerCase()) {
                     const lignes = embed_calendar.fields[index].value.split('\n');
-                    const lignesFiltrees = lignes.filter(ligne => !ligne.includes(data_suppr.title)).filter((ligne) => {return ligne !== '';});
+                    const lignesFiltrees = lignes.filter(ligne => !ligne.includes(data_suppr.title)).filter((ligne) => { return ligne !== ''; });
                     const nouveauTexte = lignesFiltrees.join('\n');
                     embed_calendar.fields[index].value = nouveauTexte;
-                    
+
                     if (embed_calendar.fields[index].value !== "```ini\n```") {
 
                         embed_calendar.fields[index].value = embed_calendar.fields[index].value;
@@ -43,9 +43,9 @@ module.exports = {
             await client.channels.fetch(config["animes"]).then(channel => {
                 channel.messages.delete(id);
             }).then(() =>
-            setTimeout(() => {
-                interaction.message.delete()
-            }, 1000));
+                setTimeout(() => {
+                    interaction.message.delete()
+                }, 1000));
 
             const index = databases.notifications.findIndex(obj => Object.keys(obj)[0] === databases.animes[interaction.message.id].id);
             if (index !== -1) {
