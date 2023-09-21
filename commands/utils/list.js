@@ -25,7 +25,5 @@ module.exports = {
         
         return interaction.reply({ content: ` Voici ta liste : \n \`\`\`${title}\`\`\``, ephemeral: true });
         
-        
-
     }
 }

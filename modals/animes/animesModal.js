@@ -31,8 +31,8 @@ module.exports = {
         async function callAPI(titre, id) {
 
             let arguments = titre ? `type: ANIME, search: "${titre}", status_in: [RELEASING, NOT_YET_RELEASED], 
-            format_in:[TV, TV_SHORT, ONA], sort: TRENDING_DESC` 
-            : `type: ANIME, id: ${id}`;
+            format_in:[TV, TV_SHORT, ONA], sort: TRENDING_DESC`
+                : `type: ANIME, id: ${id}`;
 
 
             const query = `
@@ -94,7 +94,14 @@ module.exports = {
         async function recursiveCall(data, edges, synonyms, format, compteur) {
             if (!compteur) compteur = 0;
 
-            const isPart = synonyms.find(str => /Part (\d+)/.test(str));
+            const isPart = synonyms.find(str => {
+                const match = str.match(/Part (\d+)/);
+                if (!match || match[1] === "01" || match[1] === "1") {
+                    return false;
+                }
+                return true;
+            });
+            
             if ((format === "TV" || format === "ONA") && !isPart) {
                 compteur++;
             }
@@ -105,11 +112,11 @@ module.exports = {
                     const dateB = new Date(b.node.startDate.year, b.node.startDate.month, b.node.startDate.day);
                     return dateA - dateB;
                 });
-            
+
             const { node: { id: id_call, format: format_prequel, synonyms: synonyms_prequel, title: { english, romaji } } } = data[0];
             synonyms_prequel.push(english);
             synonyms_prequel.push(romaji);
-            
+
             data_prequel = await callAPI(null, id_call);
             let { relations: { edges: edges_prequel } } = data_prequel;
 
@@ -124,7 +131,7 @@ module.exports = {
             if (hasPrequel) {
                 return await recursiveCall(data_prequel, edges_prequel, synonyms_prequel, format_prequel, compteur)
             } else {
-                if (format_prequel !== "TV" && format_prequel !== "ONA"){
+                if (format_prequel !== "TV" && format_prequel !== "ONA") {
                     compteur--;
                 }
                 data_prequel.path_title = edges_prequel.path_title;
@@ -166,7 +173,7 @@ module.exports = {
                     }
                 }
             }
-            
+
             //horaire france (-8h)
             let realTimeHours
             let realTimeMinutes
@@ -186,12 +193,12 @@ module.exports = {
                 var index = futureDate.getDay()
                 index = index === 0 ? index = 6 : index -= 1;
                 jour = jour_semaine.nom_fr[index];
-                
+
                 realTimeHours = futureDate.getHours().toString().padStart(2, '0');
                 realTimeMinutes = futureDate.getMinutes().toString().padStart(2, '0');
                 //var futureSecond = futureDate.getSeconds().toString().padStart(2, '0');
-                
-            }else{
+
+            } else {
                 realTimeHours = "00";
                 realTimeMinutes = "00";
             }
@@ -214,11 +221,11 @@ module.exports = {
         //Récupération final anime
         const animeData = await callAPI(titre);
 
-        if (!animeData || !animeData.idMal || !animeData.nextAiringEpisode){
+        if (!animeData || !animeData.idMal || !animeData.nextAiringEpisode) {
             const title_error = animeData.title.english || animeData.title.romaji || animeData.title.userPreferred || animeData.title.native || titre;
 
             return interaction.reply({ content: `\`${title_error}\` ne sort pas encore, n'a pas été trouvé ou n'a pas encore de date de sortie`, ephemeral: true });
-        } 
+        }
 
         //Récupération variable dans anime
         const { relations: { edges: edges }, id: ani_id, idMal: mal_id, format: format, title: { english: title_english, romaji: title_romaji }, coverImage: { extraLarge: URL_POSTER }, synonyms } = animeData;
@@ -264,20 +271,20 @@ module.exports = {
                     title_english ? final_title = title_english : final_title = title_romaji;
                 }
                 tmp_title = final_title;
-            } else{
+            } else {
                 let data_prequel;
-                if (hasPrequel){
+                if (hasPrequel) {
                     data_prequel = await recursiveCall(hasPrequel, edges, synonyms, format);
                     saison = data_prequel.compteur + 1;
                     data_prequel.path_title ? tmp_title = data_prequel.path_title : tmp_title = final_title;
 
-                }else{
+                } else {
                     data_prequel = animeData
                     data_prequel.path_title = tmp_title;
                 }
-                
+
                 match = synonyms.find(str => /Part (\d+)/.test(str));
-                if(match){ if (match.match(/Part (\d+)/)) {part = match.match(/Part (\d+)/)[1];}}
+                if (match) { if (match.match(/Part (\d+)/)) { part = match.match(/Part (\d+)/)[1]; } }
             }
         }
 
@@ -298,15 +305,15 @@ module.exports = {
             );
 
         let season;
-        if (saison){
+        if (saison) {
             season = saison;
         }
         if (saison > 1) {
             embed.addFields({ name: `path_season`, value: `${saison}`, inline: false });
-            
-            if (!part){
+
+            if (!part) {
                 saison = `Saison ${saison}`;
-            } else{
+            } else {
                 saison = `Saison ${saison} - Partie ${part}`;
             }
 
@@ -317,7 +324,7 @@ module.exports = {
             embed.data.title = final_title;
             saison = 1;
             embed.addFields({ name: `path_season`, value: `${saison}`, inline: false })
-            
+
         }
         embed.addFields(
             { name: `Jour`, value: Horaires.jour, inline: true },
@@ -347,8 +354,8 @@ module.exports = {
                 if (Horaires.jour.toLowerCase() === semaine.name.toLowerCase()) {
                     embed_calendar.fields[index].value = embed_calendar.fields[index].value.replace("```", "").replace("ini", "").replace("\n```", "").replace("```", "");
                     let calendar_title;
-                    season > 1 ? calendar_title = `[${Horaires.heure}] ${final_title.trim()+' '}[${saison}]`: calendar_title = `[${Horaires.heure}] ${final_title}`
-                    
+                    season > 1 ? calendar_title = `[${Horaires.heure}] ${final_title.trim() + ' '}[${saison}]` : calendar_title = `[${Horaires.heure}] ${final_title}`
+
                     if (embed_calendar.fields[index].value === " ") {
                         embed_calendar.fields[index].value = "\n- " + calendar_title;
                     } else {
@@ -361,14 +368,14 @@ module.exports = {
                         const heureA = a.match(/\d{1,2}h\d{2}/);
                         const heureB = b.match(/\d{1,2}h\d{2}/);
                         if (heureA && heureB) {
-                          heureA_minutes = parseInt(heureA[0].replace('h', ''));
-                          heureB_minutes = parseInt(heureB[0].replace('h', ''));
-                          return heureA_minutes - heureB_minutes;
+                            heureA_minutes = parseInt(heureA[0].replace('h', ''));
+                            heureB_minutes = parseInt(heureB[0].replace('h', ''));
+                            return heureA_minutes - heureB_minutes;
                         } else {
-                          return 0;
+                            return 0;
                         }
-                      });
-                      embed_calendar.fields[index].value= tableau.join('\n');
+                    });
+                    embed_calendar.fields[index].value = tableau.join('\n');
 
                 }
             })
