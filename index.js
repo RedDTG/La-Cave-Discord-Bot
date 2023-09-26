@@ -1,7 +1,7 @@
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 
 const dotenv = require('dotenv');
-dotenv.config({ path: '../data/.env'});
+dotenv.config({ path: '../.env'});
 
 const client = new Client({ intents: [
     GatewayIntentBits.DirectMessages,

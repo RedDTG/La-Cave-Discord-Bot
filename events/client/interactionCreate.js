@@ -1,8 +1,3 @@
-const { Interaction } = require("discord.js");
-const messageCreate = require("../guild_messages/messageCreate");
-const { PermissionsBitField } = require('discord.js');
-
-
 module.exports = {
     name: 'interactionCreate',
     once: false,
@@ -21,7 +16,7 @@ module.exports = {
         }
         else if (interaction.isModalSubmit()) {
             const modal = client.modals.get(interaction.customId);
-            if(!modal) return interaction.reply(`Cette modale n'existe pas !`)
+            if (!modal) return interaction.reply(`Cette modale n'existe pas !`)
             modal.runInteraction(client, interaction);
         }
     },

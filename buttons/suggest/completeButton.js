@@ -12,7 +12,7 @@ module.exports = {
         if (databases.suggest[interaction.message.id]) {
 
             const suggest_datas = databases.suggest[interaction.message.id];
-            
+
             client.channels.fetch(config["suggest"]).then(channel => {
                 channel.messages.delete(suggest_datas.message_id);
             });
@@ -24,7 +24,8 @@ module.exports = {
             writeFile("../data/suggest.json", configData, (err) => { if (err) { console.log(err) } });
         }
 
-        interaction.message.delete();
+        interaction.message.edit({ components: [] });
+        //interaction.message.delete();
 
         return interaction.reply({ content: 'Contenu ajouté !', ephemeral: true })
     }

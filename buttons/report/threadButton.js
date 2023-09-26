@@ -7,7 +7,7 @@ module.exports = {
     runInteraction(client, interaction) {
 
         if (interaction.message.hasThread) { return interaction.reply({ content: 'Ce report de bug possède déjà un thread.', ephemeral: true }) }
-        
+
         let threadName = 'Thread de résolution'
         let authorTag = '{User_Introuvable}'
 
@@ -23,10 +23,10 @@ module.exports = {
             name: threadName,
             autoArchiveDuration: 1440,
             reason: 'Ce bug demande un peu plus d\'attention',
-        }).then( (client, report_datas) => {
-            interaction.message.thread.send(`${authorTag} ce bug requiert votre attention ! Un administrateur va s'entretenir avec vous.`) 
+        }).then((client, report_datas) => {
+            interaction.message.thread.send(`${authorTag} ce bug requiert votre attention ! Un administrateur va s'entretenir avec vous.`)
         });
-        
+
         return interaction.reply({ content: 'Thread créé !', ephemeral: true })
     }
 };

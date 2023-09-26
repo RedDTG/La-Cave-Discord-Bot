@@ -14,7 +14,7 @@ module.exports = {
                 { name: `Uptime`, value: `<t:${parseInt(client.readyTimestamp / 1000)}:R>`, inline: true }
             )
             .setTimestamp()
-            .setFooter({text: message.author.username, iconURL: message.author.displayAvatarURL() })
+            .setFooter({ text: message.author.username, iconURL: message.author.displayAvatarURL() })
 
 
         message.channel.send({ embeds: [embed] });
@@ -29,7 +29,7 @@ module.exports = {
                 { name: `Uptime`, value: `<t:${parseInt(client.readyTimestamp / 1000)}:R>`, inline: true }
             )
             .setTimestamp()
-            .setFooter({text: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+            .setFooter({ text: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
 
         interaction.reply({ embeds: [embed] });
     }

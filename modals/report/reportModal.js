@@ -4,17 +4,17 @@ const databases = { config: require("../../../data/config.json") }
 
 const buttons = [
     new ActionRowBuilder()
-    .addComponents(
-        new ButtonBuilder()
-            .setCustomId('thread-button')
-            .setLabel('Thread')
-            .setStyle(ButtonStyle.Secondary),
+        .addComponents(
+            new ButtonBuilder()
+                .setCustomId('thread-button')
+                .setLabel('Thread')
+                .setStyle(ButtonStyle.Secondary),
 
-        new ButtonBuilder()
-            .setCustomId('fixed-button')
-            .setLabel('Fixed !')
-            .setStyle(ButtonStyle.Success)
-    )
+            new ButtonBuilder()
+                .setCustomId('fixed-button')
+                .setLabel('Fixed !')
+                .setStyle(ButtonStyle.Success)
+        )
 
 ]
 
@@ -26,11 +26,11 @@ module.exports = {
         const media = interaction.fields.getTextInputValue('report-media');
         const details = interaction.fields.getTextInputValue('report-details');
 
-        const embed = new EmbedBuilder() 
+        const embed = new EmbedBuilder()
             .setTitle(title)
             // .setThumbnail(client.user.displayAvatarURL())
             .setTimestamp()
-            .setFooter({text: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+            .setFooter({ text: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
             .addFields(
                 { name: `Média`, value: media, inline: false },
                 { name: `Détails`, value: details, inline: false },

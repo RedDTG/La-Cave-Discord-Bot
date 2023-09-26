@@ -27,13 +27,13 @@ module.exports = {
 
         if (isEmpty(databases.config)) {
             return interaction.reply({ content: `Aucun channel n'est configuré`, ephemeral: true });
-        } else if (!databases.config[interaction.guildId].hasOwnProperty('animes')){
+        } else if (!databases.config[interaction.guildId].hasOwnProperty('animes')) {
             return interaction.reply({ content: `Le channel pour la commande : **\`/add-anime\`**, n'est pas configuré`, ephemeral: true });
-        }else{
+        } else {
             return interaction.showModal(animesModal);
         }
 
-        
+
 
     }
 }
